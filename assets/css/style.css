@@ -1330,7 +1330,7 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .avatar-box { border-radius: 150px; }
 
-  .avatar-box img { width: 150px; }
+  .avatar-box img { width: 120px; }
 
   .info-content .name { margin-bottom: 15px; }
 
@@ -1826,6 +1826,8 @@ textarea.form-input::-webkit-resizer { display: none; }
 
   .sidebar-info { flex-direction: column; }
 
+  .avatar-box img { width: 150px; }
+
   .info-content .name {
     white-space: nowrap;
     text-align: center;
@@ -1870,7 +1872,9 @@ textarea.form-input::-webkit-resizer { display: none; }
 
 	}
 
-} /* ---- particles.js container ---- */
+} 
+
+/* ---- particles.js container ---- */
 #particles-js {
 	position: absolute;
 	  width: 100%;
