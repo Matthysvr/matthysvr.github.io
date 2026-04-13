@@ -1,0 +1,2324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agentic Peer Review: Product Tour</title>
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --surface: #111827;
+    --surface2: #1a2236;
+    --surface3: #1e293b;
+    --surface4: #243248;
+    --border: rgba(99,102,241,0.18);
+    --border-strong: rgba(99,102,241,0.34);
+    --accent: #6366f1;
+    --accent2: #8b5cf6;
+    --accent3: #06b6d4;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --text: #f1f5f9;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background:
+      radial-gradient(circle at top left, rgba(99,102,241,0.12), transparent 28%),
+      radial-gradient(circle at top right, rgba(6,182,212,0.1), transparent 22%),
+      var(--bg);
+    color: var(--text);
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; }
+  section { max-width: 1200px; margin: 0 auto; padding: 84px 24px; }
+  h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.02em; }
+  h1 { font-size: clamp(2.3rem, 5vw, 4rem); line-height: 1.08; }
+  h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); line-height: 1.12; }
+  h3 { font-size: 1.05rem; }
+  p { color: var(--text2); }
+
+  nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    height: 64px;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    backdrop-filter: blur(14px);
+    background: rgba(10,14,26,0.9);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.94rem;
+    font-weight: 700;
+  }
+
+  .nav-logo-dot {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 0.76rem;
+    box-shadow: 0 0 20px rgba(99,102,241,0.35);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .nav-link {
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 7px 14px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--text);
+    background: var(--surface2);
+  }
+
+  .nav-badge {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .section-tag {
+    display: inline-block;
+    margin-bottom: 14px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: rgba(99,102,241,0.14);
+    border: 1px solid rgba(99,102,241,0.28);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent), var(--accent2), var(--accent3));
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .divider {
+    height: 1px;
+    margin: 0 24px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 22px;
+    border-radius: 10px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    font-size: 0.86rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    box-shadow: 0 12px 30px rgba(99,102,241,0.32);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+  }
+
+  .btn-outline {
+    color: var(--text2);
+    border-color: var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .btn-outline:hover {
+    color: var(--text);
+    border-color: var(--border-strong);
+  }
+
+  .hero {
+    min-height: 100vh;
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 108px 24px 54px;
+    display: flex;
+    align-items: center;
+  }
+
+  .hero-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.03fr 0.97fr;
+    gap: 52px;
+    align-items: center;
+  }
+
+  .hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    margin-bottom: 18px;
+    border-radius: 999px;
+    background: rgba(99,102,241,0.1);
+    border: 1px solid rgba(99,102,241,0.25);
+    color: var(--accent3);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  .hero-copy p {
+    max-width: 600px;
+    margin: 18px 0 24px;
+    font-size: 1.04rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 28px;
+  }
+
+  .hero-stat {
+    background: rgba(17,24,39,0.75);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+
+  .hero-stat strong {
+    display: block;
+    font-size: 1.5rem;
+    color: var(--text);
+  }
+
+  .hero-stat span {
+    display: block;
+    font-size: 0.74rem;
+    color: var(--text2);
+  }
+
+  .hero-visual {
+    position: relative;
+    min-height: 540px;
+  }
+
+  .floating-window {
+    position: absolute;
+    background: linear-gradient(180deg, rgba(26,34,54,0.96), rgba(17,24,39,0.96));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .window-chrome {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+    color: var(--text2);
+    font-size: 0.72rem;
+  }
+
+  .window-dots {
+    display: flex;
+    gap: 6px;
+  }
+
+  .window-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: block;
+    background: rgba(255,255,255,0.18);
+  }
+
+  .window-body {
+    padding: 16px;
+  }
+
+  .hero-window-main {
+    width: 100%;
+    max-width: 520px;
+    top: 36px;
+    right: 0;
+    z-index: 3;
+  }
+
+  .hero-window-side {
+    width: 240px;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    transform: rotate(-5deg);
+    animation: driftLeft 8s ease-in-out infinite;
+  }
+
+  .hero-window-bottom {
+    width: 300px;
+    bottom: 18px;
+    left: 54px;
+    z-index: 1;
+    transform: rotate(4deg);
+    animation: driftRight 9s ease-in-out infinite;
+  }
+
+  .hero-grid-panel {
+    display: grid;
+    grid-template-columns: 188px 1fr;
+    gap: 14px;
+    min-height: 320px;
+  }
+
+  .mini-sidebar {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 14px 12px;
+  }
+
+  .mini-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 14px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .mini-brand-mark {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 800;
+  }
+
+  .mini-nav {
+    display: grid;
+    gap: 6px;
+  }
+
+  .mini-nav-item {
+    padding: 9px 10px;
+    border-radius: 10px;
+    font-size: 0.76rem;
+    color: var(--text2);
+    background: transparent;
+  }
+
+  .mini-nav-item.active {
+    background: rgba(99,102,241,0.16);
+    color: var(--text);
+    border: 1px solid rgba(99,102,241,0.24);
+  }
+
+  .screen-stack {
+    display: grid;
+    gap: 12px;
+  }
+
+  .screen-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+  }
+
+  .screen-toolbar h3 { font-size: 0.95rem; }
+
+  .toolbar-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.09);
+    background: rgba(255,255,255,0.04);
+    color: var(--text2);
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .stat-tile,
+  .card,
+  .showcase-panel,
+  .chart-wrap,
+  .route-row,
+  .flow-stage,
+  .state-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+
+  .stat-tile {
+    padding: 14px;
+  }
+
+  .stat-tile strong {
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1;
+    margin-top: 5px;
+  }
+
+  .stat-tile span {
+    display: block;
+    font-size: 0.72rem;
+    color: var(--text2);
+  }
+
+  .quick-list {
+    display: grid;
+    gap: 8px;
+  }
+
+  .quick-item,
+  .employee-row,
+  .assignment-row,
+  .activity-row,
+  .criterion-item,
+  .verify-log {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    background: rgba(255,255,255,0.025);
+  }
+
+  .quick-item-left,
+  .employee-left,
+  .assignment-left,
+  .activity-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .icon-box {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: #fff;
+  }
+
+  .blue { background: rgba(99,102,241,0.9); }
+  .green { background: rgba(16,185,129,0.9); }
+  .amber { background: rgba(245,158,11,0.9); }
+  .cyan { background: rgba(6,182,212,0.9); }
+  .violet { background: rgba(139,92,246,0.9); }
+  .red { background: rgba(239,68,68,0.9); }
+
+  .micro {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text3);
+  }
+
+  .meta {
+    font-size: 0.74rem;
+    color: var(--text2);
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    border: 1px solid;
+    line-height: 1;
+  }
+
+  .badge-blue { color: var(--accent); border-color: rgba(99,102,241,0.28); background: rgba(99,102,241,0.1); }
+  .badge-green { color: var(--green); border-color: rgba(16,185,129,0.28); background: rgba(16,185,129,0.1); }
+  .badge-amber { color: var(--amber); border-color: rgba(245,158,11,0.28); background: rgba(245,158,11,0.1); }
+  .badge-red { color: var(--red); border-color: rgba(239,68,68,0.28); background: rgba(239,68,68,0.08); }
+  .badge-slate { color: var(--text2); border-color: rgba(148,163,184,0.22); background: rgba(148,163,184,0.07); }
+  .badge-violet { color: var(--accent2); border-color: rgba(139,92,246,0.28); background: rgba(139,92,246,0.1); }
+  .badge-cyan { color: var(--accent3); border-color: rgba(6,182,212,0.28); background: rgba(6,182,212,0.1); }
+
+  .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+
+  .feature-card {
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(17,24,39,0.85), rgba(17,24,39,0.92));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+  }
+
+  .feature-card p {
+    margin-top: 8px;
+    font-size: 0.84rem;
+  }
+
+  .showcase-panel {
+    padding: 20px;
+    background: linear-gradient(180deg, rgba(17,24,39,0.96), rgba(17,24,39,0.84));
+  }
+
+  .toggle-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
+  .toggle {
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+    color: var(--text2);
+    border-radius: 10px;
+    padding: 9px 13px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .toggle.active {
+    color: var(--text);
+    border-color: rgba(99,102,241,0.28);
+    background: rgba(99,102,241,0.14);
+    box-shadow: inset 0 0 0 1px rgba(99,102,241,0.08);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .browser-mock {
+    background: linear-gradient(180deg, rgba(26,34,54,0.98), rgba(17,24,39,0.98));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .browser-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    background: rgba(255,255,255,0.03);
+    font-size: 0.74rem;
+    color: var(--text2);
+  }
+
+  .browser-toolbar .window-dots span:nth-child(1) { background: rgba(239,68,68,0.88); }
+  .browser-toolbar .window-dots span:nth-child(2) { background: rgba(245,158,11,0.88); }
+  .browser-toolbar .window-dots span:nth-child(3) { background: rgba(16,185,129,0.88); }
+
+  .browser-content {
+    padding: 18px;
+  }
+
+  .admin-shell {
+    display: grid;
+    grid-template-columns: 170px 1fr;
+    gap: 14px;
+    min-height: 420px;
+  }
+
+  .app-sidebar {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 14px;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .app-sidebar .mini-nav-item {
+    border: 1px solid transparent;
+  }
+
+  .app-sidebar .mini-nav-item.active {
+    border-color: rgba(99,102,241,0.22);
+  }
+
+  .main-screen {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+
+  .screen-card {
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    padding: 14px;
+  }
+
+  .screen-card h4 {
+    font-size: 0.88rem;
+    margin-bottom: 10px;
+  }
+
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .metric {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 12px;
+  }
+
+  .metric strong {
+    display: block;
+    font-size: 1.1rem;
+  }
+
+  .metric span {
+    font-size: 0.7rem;
+    color: var(--text2);
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: 1.08fr 0.92fr;
+    gap: 14px;
+  }
+
+  .flow-board {
+    position: relative;
+    min-height: 320px;
+    padding: 18px;
+    background:
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+      rgba(255,255,255,0.02);
+    background-size: 28px 28px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .flow-node {
+    position: absolute;
+    min-width: 126px;
+    padding: 10px 12px;
+    border-radius: 14px;
+    border: 1px solid;
+    background: rgba(17,24,39,0.94);
+    font-size: 0.72rem;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
+  }
+
+  .flow-node strong {
+    display: block;
+    color: var(--text);
+    margin-bottom: 2px;
+  }
+
+  .flow-node small {
+    color: var(--text2);
+    font-size: 0.68rem;
+  }
+
+  .flow-line {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    transform-origin: left center;
+  }
+
+  .flow-line::after {
+    content: "";
+    position: absolute;
+    right: -1px;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    border-top: 2px solid var(--accent2);
+    border-right: 2px solid var(--accent2);
+    transform: rotate(45deg);
+  }
+
+  .template-render {
+    display: grid;
+    gap: 14px;
+  }
+
+  .template-shot {
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 18px;
+    overflow: hidden;
+    background: rgba(255,255,255,0.02);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+  }
+
+  .template-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .template-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .review-shell {
+    display: grid;
+    gap: 14px;
+  }
+
+  .review-summary {
+    display: flex;
+    justify-content: space-between;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .tab-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding-bottom: 12px;
+  }
+
+  .tab-pill {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 0.76rem;
+    color: var(--text2);
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .tab-pill.active {
+    color: var(--text);
+    border-color: rgba(99,102,241,0.24);
+    background: rgba(99,102,241,0.12);
+  }
+
+  .report-layout {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 14px;
+  }
+
+  .score-ring {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    border: 8px solid rgba(99,102,241,0.28);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text);
+    margin: 8px auto 0;
+    box-shadow: inset 0 0 0 1px rgba(99,102,241,0.16);
+  }
+
+  .chat-shell {
+    display: grid;
+    grid-template-columns: 1fr 0.86fr;
+    gap: 18px;
+  }
+
+  .chat-window {
+    min-height: 500px;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    background: linear-gradient(180deg, rgba(17,24,39,0.98), rgba(10,14,26,0.98));
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .chat-header,
+  .chat-footer {
+    padding: 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .chat-footer {
+    border-bottom: 0;
+    border-top: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .banner {
+    margin: 16px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    border: 1px solid rgba(16,185,129,0.22);
+    background: rgba(16,185,129,0.08);
+    font-size: 0.78rem;
+    color: var(--text2);
+  }
+
+  .chat-scroll {
+    padding: 0 16px 16px;
+    display: grid;
+    gap: 12px;
+    align-content: start;
+  }
+
+  .bubble {
+    max-width: 84%;
+    padding: 12px 14px;
+    border-radius: 16px;
+    font-size: 0.84rem;
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .bubble.agent {
+    background: rgba(255,255,255,0.04);
+    justify-self: start;
+    border-top-left-radius: 6px;
+  }
+
+  .bubble.human {
+    background: rgba(99,102,241,0.18);
+    border-color: rgba(99,102,241,0.22);
+    justify-self: end;
+    border-top-right-radius: 6px;
+  }
+
+  .typing {
+    display: inline-flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .typing span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--text2);
+    opacity: 0.25;
+    animation: bounce 1s infinite;
+  }
+
+  .typing span:nth-child(2) { animation-delay: 0.14s; }
+  .typing span:nth-child(3) { animation-delay: 0.28s; }
+
+  .composer {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+  }
+
+  .composer-box {
+    flex: 1;
+    min-height: 74px;
+    padding: 12px 14px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    color: var(--text2);
+    font-size: 0.78rem;
+  }
+
+  .send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    border: 0;
+    color: #fff;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    font-weight: 800;
+    box-shadow: 0 12px 24px rgba(99,102,241,0.34);
+  }
+
+  .score-review {
+    display: grid;
+    gap: 12px;
+  }
+
+  .criterion-item {
+    align-items: flex-start;
+  }
+
+  .criterion-main {
+    flex: 1;
+    display: grid;
+    gap: 10px;
+  }
+
+  .criterion-box {
+    border-radius: 12px;
+    padding: 10px 12px;
+    background: rgba(255,255,255,0.035);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+
+  .slider-track {
+    position: relative;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+
+  .slider-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 72%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+  }
+
+  .slider-thumb {
+    position: absolute;
+    top: 50%;
+    left: 72%;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #fff;
+    border: 3px solid var(--accent);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 4px 14px rgba(99,102,241,0.4);
+  }
+
+  .modal {
+    padding: 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(245,158,11,0.24);
+    background: rgba(245,158,11,0.08);
+  }
+
+  .verify-console {
+    display: grid;
+    grid-template-columns: 1.12fr 0.88fr;
+    gap: 18px;
+  }
+
+  .audit-table {
+    display: grid;
+    gap: 10px;
+  }
+
+  .audit-grid-head {
+    display: grid;
+    grid-template-columns: 48px 1.1fr 0.8fr 0.75fr 0.8fr;
+    gap: 10px;
+    padding: 0 10px;
+    color: var(--text3);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .audit-grid-row {
+    display: grid;
+    grid-template-columns: 48px 1.1fr 0.8fr 0.75fr 0.8fr;
+    gap: 10px;
+    align-items: center;
+  }
+
+  .audit-grid-row > div,
+  .audit-grid-head > div {
+    min-width: 0;
+  }
+
+  .audit-grid-row .meta,
+  .audit-grid-row .badge {
+    max-width: 100%;
+  }
+
+  .caret {
+    width: 24px;
+    height: 24px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.06);
+    color: var(--text2);
+    font-size: 0.72rem;
+  }
+
+  .verify-log {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .verify-state {
+    padding: 18px;
+    border-radius: 16px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.03);
+    display: grid;
+    gap: 12px;
+  }
+
+  .verify-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    width: fit-content;
+  }
+
+  .verify-status.valid {
+    background: rgba(16,185,129,0.12);
+    border: 1px solid rgba(16,185,129,0.22);
+    color: var(--green);
+  }
+
+  .verify-status.invalid {
+    background: rgba(239,68,68,0.1);
+    border: 1px solid rgba(239,68,68,0.2);
+    color: var(--red);
+  }
+
+  .verify-status.loading {
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.2);
+    color: var(--amber);
+  }
+
+  .spinner {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(245,158,11,0.24);
+    border-top-color: var(--amber);
+    animation: spin 1s linear infinite;
+  }
+
+  .flow-strip {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .flow-stage {
+    padding: 18px 16px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .flow-stage strong {
+    display: block;
+    font-size: 0.9rem;
+    margin: 10px 0 6px;
+  }
+
+  .flow-stage span {
+    display: block;
+    font-size: 0.76rem;
+    color: var(--text2);
+  }
+
+  .flow-stage::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    opacity: 0.9;
+  }
+
+  .callout {
+    padding: 18px 20px;
+    border-radius: 16px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.06));
+    border: 1px solid rgba(99,102,241,0.22);
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  footer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 42px 24px 60px;
+    text-align: center;
+    color: var(--text3);
+    font-size: 0.78rem;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  @keyframes driftLeft {
+    0%, 100% { transform: rotate(-5deg) translateY(0); }
+    50% { transform: rotate(-3deg) translateY(-10px); }
+  }
+
+  @keyframes driftRight {
+    0%, 100% { transform: rotate(4deg) translateY(0); }
+    50% { transform: rotate(1deg) translateY(8px); }
+  }
+
+  @keyframes bounce {
+    0%, 80%, 100% { opacity: 0.25; transform: translateY(0); }
+    40% { opacity: 1; transform: translateY(-3px); }
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 1100px) {
+    .hero-grid,
+    .chat-shell,
+    .verify-console,
+    .split,
+    .report-layout { grid-template-columns: 1fr; }
+    .flow-strip { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .hero-visual { min-height: 700px; }
+  }
+
+  @media (max-width: 900px) {
+    .grid-4,
+    .metrics,
+    .stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2 { grid-template-columns: 1fr; }
+    .admin-shell,
+    .hero-grid-panel { grid-template-columns: 1fr; }
+    .audit-grid-head,
+    .audit-grid-row { grid-template-columns: 1fr; }
+    .flow-strip { grid-template-columns: 1fr; }
+    .hero-window-side,
+    .hero-window-bottom {
+      position: relative;
+      width: 100%;
+      max-width: none;
+      left: auto;
+      top: auto;
+      bottom: auto;
+      transform: none;
+      animation: none;
+      margin-top: 16px;
+    }
+    .hero-window-main {
+      position: relative;
+      max-width: none;
+      top: auto;
+      right: auto;
+    }
+  }
+
+  @media (max-width: 700px) {
+    nav { padding: 0 14px; }
+    .nav-links { display: none; }
+    section { padding: 72px 18px; }
+    .hero { padding: 94px 18px 48px; }
+    .hero-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid-4,
+    .metrics,
+    .stat-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-dot">AP</div>
+    <span>Agentic Peer Review</span>
+  </div>
+  <div class="nav-links">
+    <a href="#overview" class="nav-link">Overview</a>
+    <a href="#admin" class="nav-link">Admin</a>
+    <a href="#reviews" class="nav-link">Reviews</a>
+    <a href="#participant" class="nav-link">Participant</a>
+    <a href="#trust" class="nav-link">Trust</a>
+  </div>
+  <div class="nav-badge">Product Tour</div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="hero-grid">
+    <div class="hero-copy reveal visible">
+      <div class="hero-kicker">
+        <span class="pulse"></span>
+        Companion page to the research dashboard
+      </div>
+      <h1>Every interface, <span class="gradient-text">shown as a product story</span></h1>
+      <p>
+        This partner page translates the live application into polished, mock-first product scenes:
+        admin setup, reviewer orchestration, participant conversation, score review, aggregation,
+        and audit verification, all in the same visual language as the original dashboard.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#admin">Tour the product</a>
+        <a class="btn btn-outline" href="index.html">Open research dashboard</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong class="gradient-text">20</strong>
+          <span>user-facing routes mapped</span>
+        </div>
+        <div class="hero-stat">
+          <strong class="gradient-text">9</strong>
+          <span>high-signal UI states mocked</span>
+        </div>
+        <div class="hero-stat">
+          <strong class="gradient-text">4</strong>
+          <span>core product surfaces</span>
+        </div>
+        <div class="hero-stat">
+          <strong class="gradient-text">3</strong>
+          <span>animated demo moments</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual reveal visible">
+      <div class="floating-window hero-window-main">
+        <div class="window-chrome">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>Admin review orchestration</span>
+        </div>
+        <div class="window-body">
+          <div class="hero-grid-panel">
+            <div class="mini-sidebar">
+              <div class="mini-brand">
+                <div class="mini-brand-mark">A</div>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text)">Agentic Review</div>
+                  <div class="meta">Admin portal</div>
+                </div>
+              </div>
+              <div class="mini-nav">
+                <div class="mini-nav-item active">Dashboard</div>
+                <div class="mini-nav-item">Employees</div>
+                <div class="mini-nav-item">Templates</div>
+                <div class="mini-nav-item">Workflows</div>
+                <div class="mini-nav-item">Audit Log</div>
+              </div>
+            </div>
+            <div class="screen-stack">
+              <div class="screen-toolbar">
+                <h3>Review detail: Priya Sharma</h3>
+                <div class="toolbar-chips">
+                  <span class="chip">2 of 4 complete</span>
+                  <span class="chip">awaiting review</span>
+                </div>
+              </div>
+              <div class="stat-grid">
+                <div class="stat-tile">
+                  <span>Interviews</span>
+                  <strong>4</strong>
+                </div>
+                <div class="stat-tile">
+                  <span>Completed</span>
+                  <strong>2</strong>
+                </div>
+                <div class="stat-tile">
+                  <span>Flags</span>
+                  <strong>1</strong>
+                </div>
+                <div class="stat-tile">
+                  <span>Status</span>
+                  <strong>Draft</strong>
+                </div>
+              </div>
+              <div class="assignment-row">
+                <div class="assignment-left">
+                  <div class="icon-box blue">S</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Self interview</div>
+                    <div class="meta">Copy participant link, pending</div>
+                  </div>
+                </div>
+                <span class="badge badge-blue">Pending</span>
+              </div>
+              <div class="assignment-row">
+                <div class="assignment-left">
+                  <div class="icon-box green">P</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Peer interview x3</div>
+                    <div class="meta">One complete, two in progress</div>
+                  </div>
+                </div>
+                <span class="badge badge-green">Live links</span>
+              </div>
+              <div class="assignment-row">
+                <div class="assignment-left">
+                  <div class="icon-box amber">R</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Aggregation report</div>
+                    <div class="meta">Draft narrative, discrepancy surfaced</div>
+                  </div>
+                </div>
+                <span class="badge badge-amber">1 flag</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-window hero-window-side">
+        <div class="window-chrome">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>Participant chat</span>
+        </div>
+        <div class="window-body" style="display:grid;gap:10px">
+          <div class="badge badge-green" style="width:fit-content">Alignment revealed</div>
+          <div class="bubble agent" style="max-width:100%">Thanks for joining. Tell me about your biggest delivery this quarter.</div>
+          <div class="bubble human" style="max-width:92%">I led the migration to the new service layer and kept the rollout on schedule.</div>
+          <div class="bubble agent" style="max-width:100%">What trade-offs did you make, and how did you communicate them to the team?</div>
+          <div class="bubble agent" style="max-width:100%;display:flex;align-items:center;gap:8px">
+            <span class="typing"><span></span><span></span><span></span></span>
+            Agent is probing for evidence
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-window hero-window-bottom">
+        <div class="window-chrome">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>Audit verification</span>
+        </div>
+        <div class="window-body" style="display:grid;gap:10px">
+          <div class="verify-log">
+            <div class="micro">Latest entity</div>
+            <div style="font-size:0.82rem;font-weight:700;color:var(--text)">EmployeeReview / priya-q2</div>
+            <div class="meta">7 chained events</div>
+          </div>
+          <div class="verify-status valid">Integrity intact</div>
+          <div class="meta">Scoped hashes, actor history, and payload inspection all surfaced in one place.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="overview">
+  <div class="section-header reveal">
+    <div class="section-tag">Overview</div>
+    <h2>Four product surfaces, <span class="gradient-text">one coherent workflow</span></h2>
+    <p style="max-width:720px;margin:14px auto 0">
+      The live app is not one screen, it is a chain of connected interfaces. This page demonstrates
+      the highest-signal moments from each surface and preserves the actual product structure:
+      auth, admin, participant, and trust tooling.
+    </p>
+  </div>
+
+  <div class="grid-4 reveal">
+    <div class="feature-card">
+      <div class="badge badge-violet">Auth</div>
+      <h3 style="margin-top:12px">Admin entry</h3>
+      <p>Login and registration screens gate the operational portal and route users into the admin shell.</p>
+    </div>
+    <div class="feature-card">
+      <div class="badge badge-blue">Admin</div>
+      <h3 style="margin-top:12px">Command center</h3>
+      <p>Dashboard, employees, templates, workflows, and review detail pages handle setup and orchestration.</p>
+    </div>
+    <div class="feature-card">
+      <div class="badge badge-green">Participant</div>
+      <h3 style="margin-top:12px">Conversation flow</h3>
+      <p>Token-based review routes lead reviewers through the chat interview, score review, and completion states.</p>
+    </div>
+    <div class="feature-card">
+      <div class="badge badge-amber">Trust</div>
+      <h3 style="margin-top:12px">Audit and verification</h3>
+      <p>Global audit views expose grouped events, hash continuity, payloads, and a clear integrity check workflow.</p>
+    </div>
+  </div>
+
+  <div class="grid-2 reveal" style="margin-top:18px">
+    <div class="callout">
+      <h3>What this page emphasizes</h3>
+      <p style="margin-top:10px">
+        Instead of screenshot dumping every CRUD form, the companion page focuses on the moments that
+        best explain the product: setup, orchestration, conversation, scoring, aggregation, and audit integrity.
+      </p>
+    </div>
+    <div class="callout">
+      <h3>Mock-first, but code-grounded</h3>
+      <p style="margin-top:10px">
+        Every scene here is grounded in the current routes and components, then polished into presentation-ready
+        mock interfaces with inline motion, no external assets required.
+      </p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="admin">
+  <div class="section-header reveal">
+    <div class="section-tag">Admin Surface</div>
+    <h2>The admin portal as a <span class="gradient-text">working command center</span></h2>
+    <p style="max-width:730px;margin:14px auto 0">
+      The standalone dashboard already explains the thesis. This section demonstrates the product side:
+      KPI monitoring, employee management, workflow design, and the exact review hub that ties the system together.
+    </p>
+  </div>
+
+  <div class="showcase-panel reveal">
+    <div class="toggle-row" data-tabs="admin">
+      <button class="toggle active" data-target="admin-dashboard">Dashboard</button>
+      <button class="toggle" data-target="admin-employees">Employees</button>
+      <button class="toggle" data-target="admin-templates">Templates</button>
+      <button class="toggle" data-target="admin-workflows">Workflow Builder</button>
+    </div>
+
+    <div class="tab-panel active" id="admin-dashboard">
+      <div class="browser-mock">
+        <div class="browser-toolbar">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>/dashboard</span>
+          <span>Admin Portal</span>
+        </div>
+        <div class="browser-content">
+          <div class="admin-shell">
+            <div class="app-sidebar">
+              <div class="mini-brand">
+                <div class="mini-brand-mark">A</div>
+                <div>
+                  <div style="font-size:0.78rem;font-weight:700;color:var(--text)">Agentic Review</div>
+                  <div class="meta">Admin portal</div>
+                </div>
+              </div>
+              <div class="mini-nav">
+                <div class="mini-nav-item active">Dashboard</div>
+                <div class="mini-nav-item">Employees</div>
+                <div class="mini-nav-item">Templates</div>
+                <div class="mini-nav-item">Workflows</div>
+                <div class="mini-nav-item">Audit Log</div>
+              </div>
+            </div>
+            <div class="main-screen">
+              <div class="screen-card">
+                <div class="screen-toolbar">
+                  <div>
+                    <div class="micro">Welcome back</div>
+                    <h4>Dashboard</h4>
+                  </div>
+                  <div class="toolbar-chips">
+                    <span class="chip">New employee</span>
+                    <span class="chip">New template</span>
+                    <span class="chip">New workflow</span>
+                  </div>
+                </div>
+                <div class="metrics">
+                  <div class="metric"><span>Employees</span><strong>48</strong></div>
+                  <div class="metric"><span>Overdue reviews</span><strong style="color:var(--red)">6</strong></div>
+                  <div class="metric"><span>Active reviews</span><strong style="color:var(--amber)">14</strong></div>
+                  <div class="metric"><span>Workflows</span><strong style="color:var(--accent2)">5</strong></div>
+                </div>
+              </div>
+              <div class="split">
+                <div class="screen-card">
+                  <h4>Quick actions</h4>
+                  <div class="quick-list">
+                    <div class="quick-item">
+                      <div class="quick-item-left">
+                        <div class="icon-box blue">E</div>
+                        <div>
+                          <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Add an employee</div>
+                          <div class="meta">Register new staff and schedule review cadence</div>
+                        </div>
+                      </div>
+                      <span class="badge badge-blue">Open</span>
+                    </div>
+                    <div class="quick-item">
+                      <div class="quick-item-left">
+                        <div class="icon-box red">!</div>
+                        <div>
+                          <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Review overdue employees</div>
+                          <div class="meta">Six employees have passed their next review due date</div>
+                        </div>
+                      </div>
+                      <span class="badge badge-red">Urgent</span>
+                    </div>
+                    <div class="quick-item">
+                      <div class="quick-item-left">
+                        <div class="icon-box violet">W</div>
+                        <div>
+                          <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Design a workflow</div>
+                          <div class="meta">Build the review path with the visual editor</div>
+                        </div>
+                      </div>
+                      <span class="badge badge-violet">Visual</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="screen-card">
+                  <h4>Recent activity</h4>
+                  <div class="quick-list">
+                    <div class="activity-row">
+                      <div class="activity-left">
+                        <span class="badge badge-blue">Agent</span>
+                        <div>
+                          <div style="font-size:0.8rem;font-weight:700;color:var(--text)">criterion_scored</div>
+                          <div class="meta">ChatSession | 7f84c2a9</div>
+                        </div>
+                      </div>
+                      <div class="meta">09:14</div>
+                    </div>
+                    <div class="activity-row">
+                      <div class="activity-left">
+                        <span class="badge badge-violet">Admin</span>
+                        <div>
+                          <div style="font-size:0.8rem;font-weight:700;color:var(--text)">report_updated</div>
+                          <div class="meta">EmployeeReview | priya-q2</div>
+                        </div>
+                      </div>
+                      <div class="meta">09:06</div>
+                    </div>
+                    <div class="activity-row">
+                      <div class="activity-left">
+                        <span class="badge badge-green">Participant</span>
+                        <div>
+                          <div style="font-size:0.8rem;font-weight:700;color:var(--text)">review_submitted</div>
+                          <div class="meta">ReviewAssignment | self-1</div>
+                        </div>
+                      </div>
+                      <div class="meta">08:58</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="admin-employees">
+      <div class="browser-mock">
+        <div class="browser-toolbar">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>/employees</span>
+          <span>Directory and review cadence</span>
+        </div>
+        <div class="browser-content">
+          <div class="screen-card">
+            <div class="screen-toolbar">
+              <div>
+                <div class="micro">Employee directory</div>
+                <h4>Review status across the company</h4>
+              </div>
+              <div class="toolbar-chips">
+                <span class="chip">Due soon</span>
+                <span class="chip">Overdue</span>
+                <span class="chip">Active reviews</span>
+              </div>
+            </div>
+            <div class="quick-list">
+              <div class="employee-row">
+                <div class="employee-left">
+                  <div class="icon-box blue">P</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Priya Sharma</div>
+                    <div class="meta">Platform Engineering | review due in 3 days</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-green">Active review</span>
+                  <span class="badge badge-slate">Quarterly cadence</span>
+                </div>
+              </div>
+              <div class="employee-row">
+                <div class="employee-left">
+                  <div class="icon-box amber">M</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Marcus Lee</div>
+                    <div class="meta">Design Systems | overdue by 8 days</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-red">Overdue</span>
+                  <span class="badge badge-slate">Needs attention</span>
+                </div>
+              </div>
+              <div class="employee-row">
+                <div class="employee-left">
+                  <div class="icon-box violet">A</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Amelia Chen</div>
+                    <div class="meta">Operations | no review currently running</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-blue">Ready to start</span>
+                  <span class="badge badge-slate">6 month cadence</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="admin-templates">
+      <div class="browser-mock">
+        <div class="browser-toolbar">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>/templates</span>
+          <span>Customisable scoring criteria</span>
+        </div>
+        <div class="browser-content">
+          <div class="grid-3">
+            <div class="screen-card">
+              <h4>Leadership template</h4>
+              <div class="quick-list">
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Communication</div>
+                    <div class="meta">Numeric, 1 to 10</div>
+                  </div>
+                  <span class="badge badge-blue">Numeric</span>
+                </div>
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Cross-functional influence</div>
+                    <div class="meta">Numeric, 1 to 10</div>
+                  </div>
+                  <span class="badge badge-blue">Numeric</span>
+                </div>
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Narrative strengths</div>
+                    <div class="meta">Text evidence</div>
+                  </div>
+                  <span class="badge badge-cyan">Text</span>
+                </div>
+              </div>
+            </div>
+            <div class="screen-card">
+              <h4>Engineering template</h4>
+              <div class="quick-list">
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Execution and delivery</div>
+                    <div class="meta">Numeric with half points</div>
+                  </div>
+                  <span class="badge badge-blue">Numeric</span>
+                </div>
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Technical judgment</div>
+                    <div class="meta">Numeric, justification expected</div>
+                  </div>
+                  <span class="badge badge-blue">Numeric</span>
+                </div>
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Role calibration</div>
+                    <div class="meta">Categorical bands</div>
+                  </div>
+                  <span class="badge badge-violet">Categorical</span>
+                </div>
+              </div>
+            </div>
+            <div class="screen-card">
+              <h4>Template editing state</h4>
+              <div class="quick-list">
+                <div class="criterion-box">
+                  <div class="micro">Band labels</div>
+                  <div style="font-size:0.8rem;color:var(--text);margin-top:6px">Needs support | Effective | Strong | Exceptional</div>
+                </div>
+                <div class="criterion-box">
+                  <div class="micro">Purpose</div>
+                  <div style="font-size:0.8rem;color:var(--text2);margin-top:6px">These templates define what people are scored on. The metrics are fully customisable, and the AI can interpret them and weave them naturally into the interview flow.</div>
+                </div>
+                <div class="badge badge-green" style="width:fit-content">Custom metrics, AI-ready</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="admin-workflows">
+      <div class="browser-mock">
+        <div class="browser-toolbar">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>/workflows/new</span>
+          <span>Visual workflow editor</span>
+        </div>
+        <div class="browser-content">
+          <div class="template-render">
+            <div class="screen-toolbar">
+              <div>
+                <div class="micro">Captured from the running app</div>
+                <h4>Simple Peer Review</h4>
+              </div>
+              <div class="toolbar-chips">
+                <span class="chip">Peer x3</span>
+                <span class="chip">Neutral alignment</span>
+                <span class="chip">Score review to report</span>
+              </div>
+            </div>
+            <div class="template-shot">
+              <img src="image.png" alt="Simple Peer Review workflow editor screenshot">
+            </div>
+            <div class="template-footer">
+              <div class="meta">Using the real screenshot keeps the proportions, ports, edge routing, and node chrome aligned with the live workflow editor instead of approximating them inside the deck.</div>
+              <span class="badge badge-green">Live UI capture</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="reviews">
+  <div class="section-header reveal">
+    <div class="section-tag">Review Orchestration</div>
+    <h2>The review detail page is the <span class="gradient-text">operational hub</span></h2>
+    <p style="max-width:720px;margin:14px auto 0">
+      The highest-value admin screen is the review detail route. It connects assignments, report generation,
+      workflow snapshots, and scoped audit context, with status transitions visible in one place.
+    </p>
+  </div>
+
+  <div class="showcase-panel reveal">
+    <div class="toggle-row" data-tabs="review">
+      <button class="toggle active" data-target="review-interviews">Interviews</button>
+      <button class="toggle" data-target="review-report">Report</button>
+      <button class="toggle" data-target="review-workflow">Workflow snapshot</button>
+      <button class="toggle" data-target="review-audit">Audit trail</button>
+    </div>
+
+    <div class="browser-mock">
+      <div class="browser-toolbar">
+        <div class="window-dots"><span></span><span></span><span></span></div>
+        <span>/employees/priya/reviews/q2</span>
+        <span>Review detail</span>
+      </div>
+      <div class="browser-content">
+        <div class="review-shell">
+          <div class="review-summary">
+            <div>
+              <div class="micro">Employee review</div>
+              <h3 style="margin-top:4px">Priya Sharma</h3>
+              <div class="meta">Workflow: 360 Leadership Review | Started Apr 10 | 2 of 4 interviews complete</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <span class="badge badge-amber">Awaiting review</span>
+              <span class="badge badge-blue">View workflow</span>
+            </div>
+          </div>
+
+          <div class="tab-strip">
+            <span class="tab-pill active">Interviews 2/4</span>
+            <span class="tab-pill">Report</span>
+            <span class="tab-pill">Workflow <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--amber);margin-left:6px"></span></span>
+            <span class="tab-pill">Audit trail</span>
+          </div>
+
+          <div class="tab-panel active" id="review-interviews">
+            <div class="quick-list">
+              <div class="assignment-row">
+                <div class="assignment-left">
+                  <div class="icon-box blue">S</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Self review</div>
+                    <div class="meta">Editable reviewer name, copy link, pending status</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-blue">Pending</span>
+                  <span class="badge badge-slate">Copy link</span>
+                </div>
+              </div>
+              <div class="assignment-row">
+                <div class="assignment-left">
+                  <div class="icon-box green">P</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Peer group</div>
+                    <div class="meta">Three reviewers, one complete, one in progress, one pending</div>
+                  </div>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-green">Complete</span>
+                  <span class="badge badge-amber">In progress</span>
+                  <span class="badge badge-blue">Pending</span>
+                </div>
+              </div>
+              <div class="assignment-row" style="opacity:0.68">
+                <div class="assignment-left">
+                  <div class="icon-box violet">M</div>
+                  <div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Manager stage</div>
+                    <div class="meta">Locked until the prior branch completes</div>
+                  </div>
+                </div>
+                <span class="badge badge-slate">Locked</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="review-report">
+            <div class="report-layout">
+              <div class="screen-card" style="text-align:center">
+                <div class="micro">Overall score</div>
+                <div class="score-ring">8.4</div>
+                <div style="margin-top:10px" class="badge badge-violet">Draft report</div>
+              </div>
+              <div class="quick-list">
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+                      <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Communication</div>
+                      <span class="badge badge-blue">8.5</span>
+                    </div>
+                    <div class="meta">Expanded row shows individual reviewer scores and editable justification.</div>
+                  </div>
+                </div>
+                <div class="criterion-item">
+                  <div class="criterion-main">
+                    <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+                      <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Execution and delivery</div>
+                      <span class="badge badge-amber">7.2</span>
+                    </div>
+                    <div class="meta">Discrepancy flagged between self-score and peer cluster.</div>
+                  </div>
+                </div>
+                <div class="modal">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span class="badge badge-red">1 discrepancy</span>
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">Execution and delivery</div>
+                  </div>
+                  <div class="meta" style="margin-top:8px">Self: 9.0, peers: 6.0 to 7.0, manager pending. Admin can save, finalise, and share the report when satisfied.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="review-workflow">
+            <div class="screen-card">
+              <div class="screen-toolbar">
+                <div>
+                  <div class="micro">Frozen snapshot</div>
+                  <h4>Workflow captured when the review started</h4>
+                </div>
+                <span class="badge badge-amber">Differs from current workflow</span>
+              </div>
+              <div class="flow-board" style="min-height:260px">
+                <div class="flow-line" style="left:120px;top:84px;width:110px"></div>
+                <div class="flow-line" style="left:350px;top:84px;width:110px"></div>
+                <div class="flow-line" style="left:580px;top:84px;width:110px"></div>
+                <div class="flow-node" style="left:22px;top:52px;border-color:rgba(99,102,241,0.34)"><strong>Start</strong><small>Snapshot preserved</small></div>
+                <div class="flow-node" style="left:232px;top:52px;border-color:rgba(6,182,212,0.34)"><strong>Criteria</strong><small>Leadership template</small></div>
+                <div class="flow-node" style="left:462px;top:52px;border-color:rgba(139,92,246,0.34)"><strong>Interviews</strong><small>Self and peer branch</small></div>
+                <div class="flow-node" style="left:692px;top:52px;border-color:rgba(245,158,11,0.34)"><strong>Aggregation</strong><small>Original structure</small></div>
+              </div>
+              <div class="meta" style="margin-top:12px">The workflow tab surfaces snapshot drift clearly, so admins can see that the running review still follows the original structure, even if the live workflow has been edited.</div>
+            </div>
+          </div>
+
+          <div class="tab-panel" id="review-audit">
+            <div class="quick-list">
+              <div class="activity-row">
+                <div class="activity-left">
+                  <span class="badge badge-blue">Agent</span>
+                  <div>
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">criterion_scored</div>
+                    <div class="meta">Communication scored 8/10 with justification</div>
+                  </div>
+                </div>
+                <span class="badge badge-slate">#e71bf1...</span>
+              </div>
+              <div class="activity-row">
+                <div class="activity-left">
+                  <span class="badge badge-green">Participant</span>
+                  <div>
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">score_adjusted</div>
+                    <div class="meta">Participant moved execution from 7 to 9</div>
+                  </div>
+                </div>
+                <span class="badge badge-slate">#41cc9d...</span>
+              </div>
+              <div class="activity-row">
+                <div class="activity-left">
+                  <span class="badge badge-violet">Admin</span>
+                  <div>
+                    <div style="font-size:0.8rem;font-weight:700;color:var(--text)">report_updated</div>
+                    <div class="meta">Narrative revised before finalisation</div>
+                  </div>
+                </div>
+                <span class="badge badge-slate">#92aa04...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="participant">
+  <div class="section-header reveal">
+    <div class="section-tag">Participant Surface</div>
+    <h2>The reviewer journey stays <span class="gradient-text">simple and evidence-oriented</span></h2>
+    <p style="max-width:720px;margin:14px auto 0">
+      Participants do not see rubric plumbing. They receive a token link, have a natural conversation,
+      optionally review the generated assessment, and submit. That simplicity is one of the product's strongest qualities.
+    </p>
+  </div>
+
+  <div class="chat-shell reveal">
+    <div class="chat-window">
+      <div class="chat-header">
+        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px">
+          <div>
+            <div style="font-size:0.84rem;font-weight:700;color:var(--text)">Performance Review Interview</div>
+            <div class="meta">Powered by AI</div>
+          </div>
+          <span class="badge badge-green">Interview live</span>
+        </div>
+      </div>
+      <div class="banner">
+        Transparency banner: this review is running with a visible alignment mode, and the reviewer will get a chance to review the generated assessment before finalising.
+      </div>
+      <div class="chat-scroll">
+        <div class="bubble agent">Thanks for taking part in this review. What project best shows your impact this quarter?</div>
+        <div class="bubble human">I led the migration to the new service layer and coordinated the cutover plan across backend and support.</div>
+        <div class="bubble agent">What evidence shows that the migration improved delivery or reliability, not just technical neatness?</div>
+        <div class="bubble human">We reduced deployment rollback incidents and shortened release coordination from half a day to one hour.</div>
+        <div class="bubble agent">That helps. I also want to understand collaboration: who did you need to align, and where did you have to negotiate trade-offs?</div>
+        <div class="bubble agent">
+          <div class="typing"><span></span><span></span><span></span></div>
+        </div>
+      </div>
+      <div class="chat-footer">
+        <div class="composer">
+          <div class="composer-box">Type your message here. Enter sends, Shift+Enter adds a new line.</div>
+          <button class="send-btn">></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="score-review">
+      <div class="browser-mock">
+        <div class="browser-toolbar">
+          <div class="window-dots"><span></span><span></span><span></span></div>
+          <span>/review/token/review</span>
+          <span>Score review</span>
+        </div>
+        <div class="browser-content">
+          <div class="screen-card" style="margin-bottom:12px">
+            <div class="micro">Post-chat review</div>
+            <h4>Your assessment</h4>
+            <div class="meta">Agent comments and criterion-level scores can be adjusted before submission.</div>
+          </div>
+          <div class="criterion-item">
+            <div class="criterion-main">
+              <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+                <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Communication</div>
+                <span class="badge badge-blue">Adjusted to 8.5</span>
+              </div>
+              <div class="criterion-box">
+                <div class="micro">Agent assessment</div>
+                <div style="font-size:0.8rem;color:var(--text);margin-top:6px">Clear async updates and strong stand-up leadership.</div>
+              </div>
+              <div class="criterion-box">
+                <div class="micro">Your adjustment</div>
+                <div class="slider-track" style="margin-top:10px">
+                  <div class="slider-fill"></div>
+                  <div class="slider-thumb"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="criterion-item">
+            <div class="criterion-main">
+              <div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+                <div style="font-size:0.82rem;font-weight:700;color:var(--text)">Execution and delivery</div>
+                <span class="badge badge-amber">Challenge triggered</span>
+              </div>
+              <div class="criterion-box">
+                <div class="micro">Agent justification</div>
+                <div style="font-size:0.8rem;color:var(--text2);margin-top:6px">The agent cites rollout completion and low rollback rates, but asks for stronger evidence before accepting a larger increase.</div>
+              </div>
+            </div>
+          </div>
+          <div class="modal">
+            <div class="micro" style="color:var(--amber)">Justification required</div>
+            <div style="font-size:0.82rem;font-weight:700;color:var(--text);margin-top:4px">Some of your score adjustments are significant.</div>
+            <div class="meta" style="margin-top:8px">The dialog requests reasoning before the review can be submitted, which keeps participant changes visible and explainable.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section id="trust">
+  <div class="section-header reveal">
+    <div class="section-tag">Trust Surface</div>
+    <h2>Audit visibility moves from concept to <span class="gradient-text">operational verification</span></h2>
+    <p style="max-width:720px;margin:14px auto 0">
+      The product is strongest when the system is not only auditable in theory, but inspectable in the UI.
+      Grouped entities, expandable events, and integrity checks make that trust visible.
+    </p>
+  </div>
+
+  <div class="verify-console reveal">
+    <div class="browser-mock">
+      <div class="browser-toolbar">
+        <div class="window-dots"><span></span><span></span><span></span></div>
+        <span>/audit</span>
+        <span>Hash-chained audit log</span>
+      </div>
+      <div class="browser-content">
+        <div class="audit-table">
+          <div class="audit-grid-head">
+            <div></div>
+            <div>Entity</div>
+            <div>Events</div>
+            <div>Actors</div>
+            <div>Integrity</div>
+          </div>
+          <div class="audit-grid-row">
+            <div class="caret">v</div>
+            <div>
+              <div style="font-size:0.8rem;font-weight:700;color:var(--text)">EmployeeReview / priya-q2</div>
+              <div class="meta">Last activity 09:14</div>
+            </div>
+            <div><span class="badge badge-blue">7 events</span></div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap">
+              <span class="badge badge-blue">Agent</span>
+              <span class="badge badge-green">Participant</span>
+              <span class="badge badge-violet">Admin</span>
+            </div>
+            <div><span class="badge badge-green">Verify</span></div>
+          </div>
+          <div class="audit-grid-row" style="background:rgba(255,255,255,0.02)">
+            <div class="caret">></div>
+            <div>
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text)">criterion_scored</div>
+              <div class="meta">Communication scored 8/10 with cited evidence</div>
+            </div>
+            <div><span class="badge badge-slate">#e71bf1...</span></div>
+            <div><span class="badge badge-blue">Agent</span></div>
+            <div><span class="badge badge-slate">chained</span></div>
+          </div>
+          <div class="audit-grid-row" style="background:rgba(255,255,255,0.02)">
+            <div class="caret">></div>
+            <div>
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text)">score_adjusted</div>
+              <div class="meta">Execution raised from 7 to 9 with participant reasoning</div>
+            </div>
+            <div><span class="badge badge-slate">#41cc9d...</span></div>
+            <div><span class="badge badge-green">Participant</span></div>
+            <div><span class="badge badge-slate">chained</span></div>
+          </div>
+          <div class="audit-grid-row" style="background:rgba(255,255,255,0.02)">
+            <div class="caret">></div>
+            <div>
+              <div style="font-size:0.78rem;font-weight:700;color:var(--text)">report_updated</div>
+              <div class="meta">Narrative edited before report finalisation</div>
+            </div>
+            <div><span class="badge badge-slate">#92aa04...</span></div>
+            <div><span class="badge badge-violet">Admin</span></div>
+            <div><span class="badge badge-slate">chained</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="showcase-panel">
+      <div class="toggle-row" data-tabs="verify">
+        <button class="toggle active" data-target="verify-valid">Intact chain</button>
+        <button class="toggle" data-target="verify-invalid">Tampered chain</button>
+      </div>
+
+      <div class="tab-panel active" id="verify-valid">
+        <div class="verify-state">
+          <div class="verify-status loading" id="verify-progress">
+            <span class="spinner"></span>
+            Running verification
+          </div>
+          <div class="verify-log">
+            <div class="micro">Verification flow</div>
+            <div style="font-size:0.88rem;font-weight:700;color:var(--text)">Review entity selected, hashes replayed, result returned</div>
+            <div class="meta">The audit page checks the entity-scoped chain and reports whether the full event sequence remains intact.</div>
+          </div>
+          <div class="verify-log">
+            <div class="micro">What success looks like</div>
+            <div class="meta">Clear event count, green status, and no ambiguity about whether the stored chain still matches the generated hashes.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="verify-invalid">
+        <div class="verify-state">
+          <div class="verify-status invalid">Tampered chain detected</div>
+          <div class="verify-log">
+            <div class="micro">Failure surfaced in UI</div>
+            <div style="font-size:0.88rem;font-weight:700;color:var(--text)">Event #41cc9d... no longer matches its previous hash</div>
+            <div class="meta">The invalid state highlights the broken event, preserving a clean operational response instead of burying integrity failures in logs.</div>
+          </div>
+          <div class="verify-log">
+            <div class="micro">Why this matters</div>
+            <div class="meta">The dashboard page explains the audit chain. The product UI closes the loop by making verification actionable for admins.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section>
+  <div class="section-header reveal">
+    <div class="section-tag">End-To-End</div>
+    <h2>One review, traced across the <span class="gradient-text">full product lifecycle</span></h2>
+    <p style="max-width:720px;margin:14px auto 0">
+      The standalone companion works best when it reads as a flow, not a pile of isolated screens.
+      This strip compresses the major stages into a single narrative.
+    </p>
+  </div>
+
+  <div class="flow-strip reveal">
+    <div class="flow-stage">
+      <div class="badge badge-blue" style="margin:0 auto">1</div>
+      <strong>Admin logs in</strong>
+      <span>JWT-gated portal opens into the dashboard and employee management surfaces.</span>
+    </div>
+    <div class="flow-stage">
+      <div class="badge badge-cyan" style="margin:0 auto">2</div>
+      <strong>Template and workflow selected</strong>
+      <span>Criteria and visual pipeline determine who gets interviewed and when.</span>
+    </div>
+    <div class="flow-stage">
+      <div class="badge badge-violet" style="margin:0 auto">3</div>
+      <strong>Assignments created</strong>
+      <span>Token-based links are copied from the review detail page for each reviewer.</span>
+    </div>
+    <div class="flow-stage">
+      <div class="badge badge-green" style="margin:0 auto">4</div>
+      <strong>Participant interview runs</strong>
+      <span>Chat remains conversational while the scoring model stays behind the scenes.</span>
+    </div>
+    <div class="flow-stage">
+      <div class="badge badge-amber" style="margin:0 auto">5</div>
+      <strong>Assessment reviewed</strong>
+      <span>Participants can adjust scores, with larger changes requiring justification.</span>
+    </div>
+    <div class="flow-stage">
+      <div class="badge badge-red" style="margin:0 auto">6</div>
+      <strong>Aggregation and audit</strong>
+      <span>Admins generate the report, resolve flags, and verify the event chain.</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<footer>
+  <div style="font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px">Agentic Peer Review: Product Tour</div>
+  <div style="max-width:760px;margin:0 auto">
+    Standalone companion page for product demonstration. Styled to pair with the research dashboard,
+    grounded in the current app routes, and built with mock-first product scenes plus lightweight inline animation.
+  </div>
+</footer>
+
+<script>
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("visible");
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll(".reveal").forEach((el) => revealObserver.observe(el));
+
+  document.querySelectorAll("[data-tabs]").forEach((group) => {
+    const buttons = Array.from(group.querySelectorAll(".toggle"));
+    buttons.forEach((button) => {
+      button.addEventListener("click", () => {
+        buttons.forEach((btn) => btn.classList.remove("active"));
+        button.classList.add("active");
+        const parent = group.parentElement;
+        if (!parent) return;
+        parent.querySelectorAll(".tab-panel").forEach((panel) => panel.classList.remove("active"));
+        const target = parent.querySelector("#" + button.dataset.target);
+        if (target) target.classList.add("active");
+      });
+    });
+  });
+
+  const navLinks = document.querySelectorAll(".nav-link");
+  const sections = document.querySelectorAll("section[id]");
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        navLinks.forEach((link) => link.classList.remove("active"));
+        const active = document.querySelector('.nav-link[href="#' + entry.target.id + '"]');
+        if (active) active.classList.add("active");
+      }
+    });
+  }, { threshold: 0.34 });
+
+  sections.forEach((section) => navObserver.observe(section));
+
+  const verifyProgress = document.getElementById("verify-progress");
+  let verifyCycle = 0;
+
+  function cycleVerifyState() {
+    if (!verifyProgress) return;
+    verifyCycle = (verifyCycle + 1) % 3;
+    if (verifyCycle === 0) {
+      verifyProgress.className = "verify-status loading";
+      verifyProgress.innerHTML = '<span class="spinner"></span>Running verification';
+    } else if (verifyCycle === 1) {
+      verifyProgress.className = "verify-status valid";
+      verifyProgress.textContent = "Integrity intact: 7 events checked";
+    } else {
+      verifyProgress.className = "verify-status loading";
+      verifyProgress.innerHTML = '<span class="spinner"></span>Replaying hashes';
+    }
+  }
+
+  cycleVerifyState();
+  setInterval(cycleVerifyState, 2400);
+</script>
+</body>
+</html>
