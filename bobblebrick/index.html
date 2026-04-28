@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bobblebrick</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: system-ui, Segoe UI, sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+    }
+    .wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px 16px 32px;
+    }
+    .title-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 12px;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    .title-row .fps {
+      font-size: 0.78rem;
+      color: #8b949e;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+      font-variant-numeric: tabular-nums;
+    }
+    .hud .stat {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .hud .stat .k {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #8b949e;
+    }
+    .hud .stat .v {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #e6edf3;
+    }
+    .game-shell {
+      position: relative;
+      width: 100%;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid #30363d;
+      background: #161b22;
+    }
+    .game-stack {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 960 / 640;
+    }
+    #game, #faceOverlay {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+    #faceOverlay { pointer-events: none; }
+
+    .primary-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      margin-top: 12px;
+    }
+    .primary-bar .spacer { flex: 1; }
+    .btn {
+      padding: 9px 16px;
+      border-radius: 8px;
+      border: 1px solid #484f58;
+      background: #21262d;
+      color: #e6edf3;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-family: inherit;
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+    .btn:hover { background: #30363d; }
+    .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+    .btn.primary {
+      background: #1f6feb;
+      border-color: #1f6feb;
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn.primary:hover { background: #2f7ff5; border-color: #2f7ff5; }
+    .btn.ghost {
+      background: transparent;
+      border-color: #30363d;
+      color: #c9d1d9;
+    }
+    .btn.ghost:hover { background: #161b22; }
+    .btn.ghost.open {
+      background: #161b22;
+      border-color: #484f58;
+    }
+    .chev {
+      display: inline-block;
+      transition: transform 150ms ease;
+      margin-left: 6px;
+      opacity: 0.7;
+    }
+    .btn.ghost.open .chev { transform: rotate(180deg); }
+
+    .settings-panel {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      background: #161b22;
+      display: none;
+    }
+    .settings-panel.show { display: block; }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px 16px;
+    }
+    .setting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 6px 0;
+      min-width: 0;
+    }
+    .setting .label {
+      font-size: 0.88rem;
+      color: #c9d1d9;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+    .setting .label .sub {
+      font-size: 0.75rem;
+      color: #8b949e;
+    }
+    .setting input[type="range"] {
+      width: 160px;
+      accent-color: #1f6feb;
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #484f58;
+      background: #21262d;
+      color: #e6edf3;
+      border-radius: 999px;
+      padding: 4px 10px 4px 6px;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.82rem;
+      min-width: 92px;
+      justify-content: flex-start;
+    }
+    .toggle .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #6e7681;
+      transition: background 120ms ease, transform 120ms ease;
+    }
+    .toggle[aria-pressed="true"] {
+      background: #0d3a6b;
+      border-color: #1f6feb;
+      color: #e6f0ff;
+    }
+    .toggle[aria-pressed="true"] .dot { background: #58a6ff; }
+    .toggle .lbl { white-space: nowrap; }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 0.82rem;
+      color: #8b949e;
+    }
+    .status {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #8b949e;
+      min-height: 1.2em;
+    }
+    .banner {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      background: #3d1619;
+      border: 1px solid #f85149;
+      color: #ffa198;
+      font-size: 0.88rem;
+      display: none;
+    }
+    .banner.show { display: block; }
+
+    @media (max-width: 640px) {
+      .hud { grid-template-columns: repeat(2, 1fr); }
+      .settings-grid { grid-template-columns: 1fr; }
+      .setting input[type="range"] { width: 130px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="title-row">
+      <h1>Bobblebrick</h1>
+      <span class="fps" id="fpsLabel">FPS: 0</span>
+    </div>
+    <div class="hud">
+      <div class="stat"><span class="k">Score</span><span class="v" id="scoreLabel">0</span></div>
+      <div class="stat"><span class="k">High</span><span class="v" id="highLabel">0</span></div>
+      <div class="stat"><span class="k">Lives</span><span class="v" id="livesLabel">3</span></div>
+      <div class="stat"><span class="k">Level</span><span class="v" id="levelLabel">1</span></div>
+    </div>
+    <div class="game-shell">
+      <div class="game-stack" id="gameStack">
+        <canvas id="game"></canvas>
+        <canvas id="faceOverlay"></canvas>
+      </div>
+    </div>
+    <div class="primary-bar">
+      <button type="button" class="btn primary" id="btnStart">Start</button>
+      <button type="button" class="btn" id="btnReset">Reset</button>
+      <div class="spacer"></div>
+      <button type="button" class="btn ghost" id="btnSettings" aria-expanded="false">Settings<span class="chev">v</span></button>
+    </div>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="settings-grid">
+        <div class="setting">
+          <div class="label">
+            <span>Face control</span>
+            <span class="sub">Move paddle by turning your head</span>
+          </div>
+          <button type="button" class="toggle" id="btnMode" aria-pressed="true"><span class="dot"></span><span class="lbl">On</span></button>
+        </div>
+        <div class="setting">
+          <div class="label">
+            <span>Face overlay</span>
+            <span class="sub">Show landmarks on the game</span>
+          </div>
+          <button type="button" class="toggle" id="btnOverlay" aria-pressed="true"><span class="dot"></span><span class="lbl">On</span></button>
+        </div>
+        <div class="setting">
+          <div class="label">
+            <span>Performance mode</span>
+            <span class="sub">Lower camera + DPR for higher FPS</span>
+          </div>
+          <button type="button" class="toggle" id="btnPerf" aria-pressed="true"><span class="dot"></span><span class="lbl">On</span></button>
+        </div>
+        <div class="setting">
+          <div class="label">
+            <span>Sensitivity</span>
+            <span class="sub">How far paddle moves per head turn</span>
+          </div>
+          <input type="range" id="sensitivity" min="12" max="48" value="26" />
+        </div>
+        <div class="setting" style="grid-column: 1 / -1;">
+          <div class="label">
+            <span>Calibrate face</span>
+            <span class="sub">Look straight at the camera, then press</span>
+          </div>
+          <button type="button" class="btn" id="btnCalibrate">Calibrate</button>
+        </div>
+      </div>
+    </div>
+    <div class="hint">Tip: in face mode, briefly open your mouth to launch the ball.</div>
+    <div class="status" id="status"></div>
+    <div class="banner" id="banner"></div>
+  </div>
+  <video id="webcam" playsinline autoplay muted style="display:none"></video>
+
+  <script type="module">
+    import {
+      FaceLandmarker,
+      FilesetResolver,
+      DrawingUtils,
+    } from "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs";
+
+    const MODEL =
+      "https://storage.googleapis.com/mediapipe-models/face_landmarker/face_landmarker/float16/1/face_landmarker.task";
+    const WASM =
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
+
+    const LOGICAL_W = 960;
+    const LOGICAL_H = 640;
+    const COLS = 12;
+    const ROWS = 8;
+    const BRICK_TOP = 72;
+    const BRICK_H = 26;
+    const BRICK_GAP = 4;
+    const PADDLE_Y = LOGICAL_H - 48;
+    const BALL_R = 8;
+    const PADDLE_W0 = 120;
+    const PADDLE_W1 = 80;
+    const PADDLE_H = 14;
+    const HS_KEY = "faceBreakoutHighScore";
+
+    const BRICK_ROWS = [
+      { color: "#ff5555", points: 7, strength: 2 },
+      { color: "#ff5555", points: 7, strength: 2 },
+      { color: "#ff9944", points: 5, strength: 1 },
+      { color: "#ff9944", points: 5, strength: 1 },
+      { color: "#55cc55", points: 3, strength: 1 },
+      { color: "#55cc55", points: 3, strength: 1 },
+      { color: "#cccc44", points: 1, strength: 1 },
+      { color: "#cccc44", points: 1, strength: 1 },
+    ];
+
+    function yawFromMatrixRowMajor(m) {
+      const r20 = m[8];
+      const r22 = m[10];
+      return Math.atan2(r20, r22);
+    }
+
+    function yawFromLandmarks(lm) {
+      if (!lm || !lm[1] || !lm[33] || !lm[263]) return 0;
+      const ex = (lm[33].x + lm[263].x) * 0.5;
+      const nx = lm[1].x;
+      const iw = Math.max(0.02, Math.abs(lm[263].x - lm[33].x));
+      return Math.asin(Math.max(-1, Math.min(1, (nx - ex) / (iw * 0.65))));
+    }
+
+    let _lmBuf = null;
+    function mirrorAndFitInto(lm, cw, ch) {
+      if (!lm || !lm.length) return lm;
+      if (!_lmBuf || _lmBuf.length !== lm.length) {
+        _lmBuf = new Array(lm.length);
+        for (let i = 0; i < lm.length; i++) _lmBuf[i] = { x: 0, y: 0, z: 0 };
+      }
+      let minX = 1, maxX = 0, minY = 1, maxY = 0;
+      for (let i = 0; i < lm.length; i++) {
+        const mx = 1 - lm[i].x;
+        const my = lm[i].y;
+        if (mx < minX) minX = mx;
+        if (mx > maxX) maxX = mx;
+        if (my < minY) minY = my;
+        if (my > maxY) maxY = my;
+      }
+      const pad = 0.05;
+      const bw = Math.max(1e-4, maxX - minX + pad * 2);
+      const bh = Math.max(1e-4, maxY - minY + pad * 2);
+      const midX = (minX + maxX) * 0.5;
+      const midY = (minY + maxY) * 0.5;
+      const fill = 0.9;
+      const s = Math.min((cw * fill) / bw, (ch * fill) / bh);
+      for (let i = 0; i < lm.length; i++) {
+        const p = lm[i];
+        const mx = 1 - p.x;
+        const out = _lmBuf[i];
+        out.x = ((mx - midX) * s + cw * 0.5) / cw;
+        out.y = ((p.y - midY) * s + ch * 0.5) / ch;
+        out.z = p.z;
+      }
+      return _lmBuf;
+    }
+
+    function blendShapeScore(result, name) {
+      const fbs = result && result.faceBlendshapes;
+      if (!fbs || !fbs[0]) return 0;
+      const cats = fbs[0].categories;
+      if (!cats || !cats.length) return 0;
+      for (let i = 0; i < cats.length; i++) {
+        const c = cats[i];
+        if (!c) continue;
+        if (c.categoryName === name || c.displayName === name) return c.score || 0;
+      }
+      return 0;
+    }
+
+    function mouthOpenLandmarkFallback(lm) {
+      if (!lm) return 0;
+      const lip = FaceLandmarker.FACE_LANDMARKS_LIPS;
+      if (!lip || !lip.length) return 0;
+      let minY = 1;
+      let maxY = 0;
+      let n = 0;
+      for (let i = 0; i < lip.length; i++) {
+        const seg = lip[i];
+        const a = seg && seg.start;
+        const b = seg && seg.end;
+        if (lm[a]) {
+          n++;
+          if (lm[a].y < minY) minY = lm[a].y;
+          if (lm[a].y > maxY) maxY = lm[a].y;
+        }
+        if (lm[b]) {
+          n++;
+          if (lm[b].y < minY) minY = lm[b].y;
+          if (lm[b].y > maxY) maxY = lm[b].y;
+        }
+      }
+      if (n < 4) return 0;
+      const gap = maxY - minY;
+      return Math.max(0, Math.min(1, (gap - 0.045) / 0.1));
+    }
+
+    function mouthOpenSignal(result) {
+      const jaw = blendShapeScore(result, "jawOpen");
+      const lower = blendShapeScore(result, "mouthLowerDown");
+      const fromBlend = Math.max(jaw, lower * 0.88);
+      const lm = result && result.faceLandmarks && result.faceLandmarks[0];
+      const fromLm = mouthOpenLandmarkFallback(lm);
+      return Math.max(fromBlend, fromLm * 0.65);
+    }
+
+    function fillRoundRect(ctx, x, y, w, h, r) {
+      const rr = Math.min(r, w * 0.5, h * 0.5);
+      if (ctx.roundRect) {
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, h, rr);
+        ctx.fill();
+      } else {
+        ctx.fillRect(x, y, w, h);
+      }
+    }
+
+    class Game {
+      constructor() {
+        this.level = 1;
+        this.score = 0;
+        this.lives = 3;
+        this.running = false;
+        this.paused = true;
+        this.gameOver = false;
+        this.ceilingHit = false;
+        this.paddleW = PADDLE_W0;
+        this.paddleX = LOGICAL_W * 0.5;
+        this.paddleTargetX = this.paddleX;
+        this.ballAttached = true;
+        this.ballX = this.paddleX;
+        this.ballY = PADDLE_Y - PADDLE_H * 0.5 - BALL_R - 2;
+        this.ballVx = 0;
+        this.ballVy = 0;
+        this.ballSpeed = 320 + (this.level - 1) * 40;
+        this.bricksBroken = 0;
+        this.speedBumpCount = 0;
+        this.bricks = [];
+        this.buildBricks();
+      }
+
+      buildBricks() {
+        const totalGap = BRICK_GAP * (COLS + 1);
+        const brickW = (LOGICAL_W - totalGap) / COLS;
+        this.bricks = [];
+        this._brickDirty = true;
+        for (let r = 0; r < ROWS; r++) {
+          const spec = BRICK_ROWS[r];
+          for (let c = 0; c < COLS; c++) {
+            const x = BRICK_GAP + c * (brickW + BRICK_GAP);
+            const y = BRICK_TOP + r * (BRICK_H + BRICK_GAP);
+            this.bricks.push({
+              x,
+              y,
+              w: brickW,
+              h: BRICK_H,
+              color: spec.color,
+              points: spec.points,
+              strength: spec.strength,
+              hits: 0,
+              alive: true,
+            });
+          }
+        }
+      }
+
+      resetBallOnPaddle() {
+        this.ballAttached = true;
+        this.ballX = this.paddleX;
+        this.ballY = PADDLE_Y - PADDLE_H * 0.5 - BALL_R - 2;
+        this.ballVx = 0;
+        this.ballVy = 0;
+      }
+
+      launchBall() {
+        if (!this.ballAttached) return;
+        this.ballAttached = false;
+        const ang = (-Math.PI / 2) + (Math.random() * 0.5 - 0.25);
+        const sp = this.ballSpeed;
+        this.ballVx = Math.cos(ang) * sp;
+        this.ballVy = Math.sin(ang) * sp;
+      }
+
+      normalizeBallSpeed() {
+        const sp = Math.hypot(this.ballVx, this.ballVy);
+        if (sp < 1e-6) return;
+        const t = this.ballSpeed / sp;
+        this.ballVx *= t;
+        this.ballVy *= t;
+      }
+
+      bumpSpeed(mul = 1.06) {
+        this.ballSpeed = Math.min(720, this.ballSpeed * mul);
+        this.normalizeBallSpeed();
+      }
+
+      nextLevel() {
+        this.level += 1;
+        this.ballSpeed = 320 + (this.level - 1) * 48;
+        this.buildBricks();
+        this.resetBallOnPaddle();
+        this.ceilingHit = false;
+        this.paddleW = PADDLE_W0;
+        this.bricksBroken = 0;
+        this.speedBumpCount = 0;
+      }
+
+      aliveBrickCount() {
+        let n = 0;
+        for (const b of this.bricks) if (b.alive) n++;
+        return n;
+      }
+
+      updatePaddle(dt, keys, pointerX, modeFace, faceTargetX) {
+        const half = this.paddleW * 0.5;
+        const minX = half + 4;
+        const maxX = LOGICAL_W - half - 4;
+        let target = this.paddleX;
+        if (modeFace && faceTargetX != null && Number.isFinite(faceTargetX)) {
+          target = faceTargetX;
+        } else if (modeFace) {
+          target = this.paddleX;
+        } else {
+          let dir = 0;
+          if (keys.left) dir -= 1;
+          if (keys.right) dir += 1;
+          if (dir !== 0) {
+            target = this.paddleX + dir * 520 * dt;
+          } else if (pointerX != null && Number.isFinite(pointerX)) {
+            target = pointerX;
+          }
+        }
+        target = Math.max(minX, Math.min(maxX, target));
+        const maxStep = modeFace ? 900 * dt : 700 * dt;
+        const dx = Math.max(-maxStep, Math.min(maxStep, target - this.paddleX));
+        this.paddleX += dx;
+        this.paddleTargetX = target;
+        if (this.ballAttached) {
+          this.ballX = this.paddleX;
+          this.ballY = PADDLE_Y - PADDLE_H * 0.5 - BALL_R - 2;
+        }
+      }
+
+      updatePhysics(dt) {
+        if (this.paused || this.gameOver || !this.running) return;
+        if (this.ballAttached) return;
+        let steps = Math.ceil((Math.hypot(this.ballVx, this.ballVy) * dt) / 14);
+        steps = Math.max(1, Math.min(10, steps));
+        const sub = dt / steps;
+        for (let s = 0; s < steps; s++) this.stepBall(sub);
+      }
+
+      stepBall(dt) {
+        this.ballX += this.ballVx * dt;
+        this.ballY += this.ballVy * dt;
+        const half = this.paddleW * 0.5;
+        const pyTop = PADDLE_Y - PADDLE_H * 0.5;
+        const pyBot = PADDLE_Y + PADDLE_H * 0.5;
+
+        if (this.ballX < BALL_R) {
+          this.ballX = BALL_R;
+          this.ballVx = Math.abs(this.ballVx);
+          this.normalizeBallSpeed();
+        } else if (this.ballX > LOGICAL_W - BALL_R) {
+          this.ballX = LOGICAL_W - BALL_R;
+          this.ballVx = -Math.abs(this.ballVx);
+          this.normalizeBallSpeed();
+        }
+        if (this.ballY < BALL_R) {
+          this.ballY = BALL_R;
+          this.ballVy = Math.abs(this.ballVy);
+          this.normalizeBallSpeed();
+          if (!this.ceilingHit) {
+            this.ceilingHit = true;
+            this.paddleW = PADDLE_W1;
+            this.bumpSpeed(1.04);
+          }
+        }
+
+        if (
+          this.ballVy > 0 &&
+          this.ballY + BALL_R >= pyTop &&
+          this.ballY - BALL_R <= pyBot &&
+          this.ballX >= this.paddleX - half - BALL_R &&
+          this.ballX <= this.paddleX + half + BALL_R
+        ) {
+          this.ballY = pyTop - BALL_R - 0.01;
+          const hit = (this.ballX - this.paddleX) / (half + 1e-6);
+          const clamped = Math.max(-1, Math.min(1, hit));
+          const maxA = (60 * Math.PI) / 180;
+          const ang = -Math.PI / 2 + clamped * maxA;
+          const sp = this.ballSpeed;
+          this.ballVx = Math.cos(ang) * sp;
+          this.ballVy = Math.sin(ang) * sp;
+          if (Math.abs(this.ballVy) < 120) this.ballVy = -Math.abs(this.ballVy) - 40;
+          this.normalizeBallSpeed();
+        }
+
+        for (const b of this.bricks) {
+          if (!b.alive) continue;
+          const cx = this.ballX;
+          const cy = this.ballY;
+          const nx = Math.max(b.x, Math.min(b.x + b.w, cx));
+          const ny = Math.max(b.y, Math.min(b.y + b.h, cy));
+          const dx = cx - nx;
+          const dy = cy - ny;
+          if (dx * dx + dy * dy < BALL_R * BALL_R) {
+            b.hits += 1;
+            this._brickDirty = true;
+            if (b.hits < b.strength) {
+              const overlapX = Math.min(cx - b.x, b.x + b.w - cx);
+              const overlapY = Math.min(cy - b.y, b.y + b.h - cy);
+              if (overlapX < overlapY) {
+                this.ballVx = -this.ballVx;
+                this.ballX += Math.sign(cx - (b.x + b.w * 0.5)) * (BALL_R + 1);
+              } else {
+                this.ballVy = -this.ballVy;
+                this.ballY += Math.sign(cy - (b.y + b.h * 0.5)) * (BALL_R + 1);
+              }
+              this.normalizeBallSpeed();
+            } else {
+              b.alive = false;
+              this.score += b.points * this.level;
+              this.bricksBroken += 1;
+              if (b.points >= 7) this.bumpSpeed(1.03);
+              if (this.bricksBroken % 6 === 0) this.bumpSpeed(1.025);
+              const overlapX = Math.min(cx - b.x, b.x + b.w - cx);
+              const overlapY = Math.min(cy - b.y, b.y + b.h - cy);
+              if (overlapX < overlapY) {
+                this.ballVx = -this.ballVx;
+                this.ballX += Math.sign(cx - (b.x + b.w * 0.5)) * (BALL_R + 1);
+              } else {
+                this.ballVy = -this.ballVy;
+                this.ballY += Math.sign(cy - (b.y + b.h * 0.5)) * (BALL_R + 1);
+              }
+              this.normalizeBallSpeed();
+            }
+            break;
+          }
+        }
+
+        if (this.ballY - BALL_R > LOGICAL_H) {
+          this.lives -= 1;
+          if (this.lives <= 0) {
+            this.gameOver = true;
+            this.running = false;
+          } else {
+            this.resetBallOnPaddle();
+          }
+        }
+
+        if (this.aliveBrickCount() === 0) {
+          this.nextLevel();
+        }
+      }
+
+      _ensureBrickCache() {
+        if (!this._brickCanvas) {
+          this._brickCanvas = document.createElement("canvas");
+          this._brickCanvas.width = LOGICAL_W;
+          this._brickCanvas.height = LOGICAL_H;
+          this._brickCtx = this._brickCanvas.getContext("2d");
+          this._brickDirty = true;
+        }
+        if (!this._brickDirty) return;
+        const ctx = this._brickCtx;
+        ctx.clearRect(0, 0, LOGICAL_W, LOGICAL_H);
+        for (const b of this.bricks) {
+          if (!b.alive) continue;
+          ctx.fillStyle = b.color;
+          ctx.strokeStyle = "#1a1f26";
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          if (ctx.roundRect) ctx.roundRect(b.x + 1, b.y + 1, b.w - 2, b.h - 2, 4);
+          else ctx.rect(b.x + 1, b.y + 1, b.w - 2, b.h - 2);
+          ctx.fill();
+          ctx.stroke();
+          if (b.strength > 1 && b.hits < b.strength - 1) {
+            ctx.strokeStyle = "rgba(0,0,0,0.35)";
+            ctx.beginPath();
+            ctx.moveTo(b.x + 6, b.y + b.h * 0.5);
+            ctx.lineTo(b.x + b.w - 6, b.y + b.h * 0.5);
+            ctx.stroke();
+          }
+        }
+        this._brickDirty = false;
+      }
+
+      invalidateBricks() {
+        this._brickDirty = true;
+      }
+
+      draw(ctx) {
+        ctx.fillStyle = "#0a0e14";
+        ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+        this._ensureBrickCache();
+        ctx.drawImage(this._brickCanvas, 0, 0);
+        ctx.fillStyle = "#58a6ff";
+        fillRoundRect(
+          ctx,
+          this.paddleX - this.paddleW * 0.5,
+          PADDLE_Y - PADDLE_H * 0.5,
+          this.paddleW,
+          PADDLE_H,
+          6
+        );
+        ctx.fillStyle = "#f0f6fc";
+        ctx.beginPath();
+        ctx.arc(this.ballX, this.ballY, BALL_R, 0, Math.PI * 2);
+        ctx.fill();
+        if (this.paused && !this.gameOver && this.running) {
+          ctx.fillStyle = "rgba(0,0,0,0.55)";
+          ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+          ctx.fillStyle = "#e6edf3";
+          ctx.font = "bold 42px system-ui,sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Paused", LOGICAL_W * 0.5, LOGICAL_H * 0.48);
+        }
+        if (this.gameOver) {
+          ctx.fillStyle = "rgba(0,0,0,0.65)";
+          ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+          ctx.fillStyle = "#f85149";
+          ctx.font = "bold 44px system-ui,sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Game over", LOGICAL_W * 0.5, LOGICAL_H * 0.42);
+          ctx.fillStyle = "#e6edf3";
+          ctx.font = "22px system-ui,sans-serif";
+          ctx.fillText("Press Start or Space", LOGICAL_W * 0.5, LOGICAL_H * 0.53);
+          ctx.font = "16px system-ui,sans-serif";
+          ctx.fillText("or open mouth (face mode)", LOGICAL_W * 0.5, LOGICAL_H * 0.6);
+        }
+        if (!this.running && !this.gameOver) {
+          ctx.fillStyle = "rgba(0,0,0,0.45)";
+          ctx.fillRect(0, 0, LOGICAL_W, LOGICAL_H);
+          ctx.fillStyle = "#e6edf3";
+          ctx.font = "bold 28px system-ui,sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText("Press Start", LOGICAL_W * 0.5, LOGICAL_H * 0.48);
+          ctx.font = "16px system-ui,sans-serif";
+          ctx.fillText("Space, click, or open mouth (face mode)", LOGICAL_W * 0.5, LOGICAL_H * 0.55);
+        }
+      }
+    }
+
+    const gameCanvas = document.getElementById("game");
+    const overlayCanvas = document.getElementById("faceOverlay");
+    const video = document.getElementById("webcam");
+    const statusEl = document.getElementById("status");
+    const bannerEl = document.getElementById("banner");
+    const btnStart = document.getElementById("btnStart");
+    const btnReset = document.getElementById("btnReset");
+    const btnMode = document.getElementById("btnMode");
+    const btnOverlay = document.getElementById("btnOverlay");
+    const btnCalibrate = document.getElementById("btnCalibrate");
+    const btnPerf = document.getElementById("btnPerf");
+    const btnSettings = document.getElementById("btnSettings");
+    const settingsPanel = document.getElementById("settingsPanel");
+    const sensEl = document.getElementById("sensitivity");
+    const gameStack = document.getElementById("gameStack");
+
+    btnSettings.addEventListener("click", () => {
+      const open = settingsPanel.classList.toggle("show");
+      btnSettings.classList.toggle("open", open);
+      btnSettings.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    let perfMode = true;
+    const PERF = {
+      dprCap: () => (perfMode ? 1 : 2),
+      cameraW: () => (perfMode ? 320 : 640),
+      cameraH: () => (perfMode ? 240 : 480),
+      detectIntervalMs: () => (perfMode ? 45 : 0),
+      drawTesselation: () => !perfMode,
+    };
+
+    let dpr = Math.min(PERF.dprCap(), window.devicePixelRatio || 1);
+    const gctx = gameCanvas.getContext("2d");
+    const octx = overlayCanvas.getContext("2d");
+
+    function resizeCanvases() {
+      dpr = Math.min(PERF.dprCap(), window.devicePixelRatio || 1);
+      const rect = gameStack.getBoundingClientRect();
+      const cssW = rect.width;
+      const cssH = rect.height;
+      gameCanvas.width = Math.round(cssW * dpr);
+      gameCanvas.height = Math.round(cssH * dpr);
+      overlayCanvas.width = gameCanvas.width;
+      overlayCanvas.height = gameCanvas.height;
+      gctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resizeCanvases();
+    window.addEventListener("resize", resizeCanvases);
+
+    let faceLandmarker = null;
+    let drawingUtilsOverlay = null;
+    let lastFaceResult = null;
+    let faceMode = true;
+    let overlayFace = true;
+    let yawOffset = 0;
+    let smoothedYaw = 0;
+    let lastFaceTime = performance.now();
+    let lastDetectTs = 0;
+    let stream = null;
+    let cameraError = "";
+    let statusLine = "";
+    let pendingCalibration = false;
+
+    const keys = { left: false, right: false };
+    let pointerGameX = null;
+    let prevBallAttached = true;
+    let prevRunning = false;
+    let mouthSmoothedOpen = 0;
+    let mouthOpenHeld = 0;
+    let mouthClosedHeld = 0;
+    let mouthLaunchPrimed = false;
+    let lastTs = performance.now();
+    let fpsAcc = 0;
+    let fpsFrames = 0;
+    let fpsShow = 0;
+
+    function loadHigh() {
+      const v = parseInt(localStorage.getItem(HS_KEY) || "0", 10);
+      return Number.isFinite(v) ? v : 0;
+    }
+    let highScore = loadHigh();
+
+    const game = new Game();
+
+    function setStatus(t) {
+      if (t === statusLine) return;
+      statusLine = t;
+      statusEl.textContent = t;
+    }
+
+    function showBanner(msg) {
+      if (!msg) {
+        bannerEl.classList.remove("show");
+        bannerEl.textContent = "";
+        return;
+      }
+      bannerEl.textContent = msg;
+      bannerEl.classList.add("show");
+    }
+
+    function updateHud() {
+      document.getElementById("scoreLabel").textContent = String(game.score);
+      document.getElementById("highLabel").textContent = String(highScore);
+      document.getElementById("livesLabel").textContent = String(game.lives);
+      document.getElementById("levelLabel").textContent = String(game.level);
+      document.getElementById("fpsLabel").textContent = "FPS: " + fpsShow;
+    }
+
+    async function initFaceLandmarker() {
+      const vision = await FilesetResolver.forVisionTasks(WASM);
+      try {
+        faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
+          baseOptions: { modelAssetPath: MODEL, delegate: "GPU" },
+          runningMode: "VIDEO",
+          numFaces: 1,
+          outputFaceBlendshapes: true,
+          outputFacialTransformationMatrixes: true,
+          minFaceDetectionConfidence: 0.5,
+          minFacePresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+      } catch {
+        faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
+          baseOptions: { modelAssetPath: MODEL, delegate: "CPU" },
+          runningMode: "VIDEO",
+          numFaces: 1,
+          outputFaceBlendshapes: true,
+          outputFacialTransformationMatrixes: true,
+          minFaceDetectionConfidence: 0.5,
+          minFacePresenceConfidence: 0.5,
+          minTrackingConfidence: 0.5,
+        });
+      }
+    }
+
+    async function startCamera() {
+      cameraError = "";
+      if (stream) return true;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            width: { ideal: PERF.cameraW() },
+            height: { ideal: PERF.cameraH() },
+            facingMode: "user",
+          },
+          audio: false,
+        });
+        video.srcObject = stream;
+        await video.play();
+        return true;
+      } catch (e) {
+        cameraError = e && e.message ? e.message : "Camera unavailable";
+        showBanner("Camera: " + cameraError + ". Switched to keyboard.");
+        faceMode = false;
+        syncUi();
+        return false;
+      }
+    }
+
+    async function ensureFacePipeline() {
+      if (!faceLandmarker) {
+        try {
+          await initFaceLandmarker();
+        } catch (e) {
+          showBanner("Face model failed to load: " + (e && e.message ? e.message : String(e)));
+          faceMode = false;
+          syncUi();
+          return false;
+        }
+      }
+      const ok = await startCamera();
+      return ok;
+    }
+
+    function faceTargetFromResult(result) {
+      const sliderMin = parseFloat(sensEl.min) || 12;
+      const sliderMax = parseFloat(sensEl.max) || 48;
+      const sliderVal = parseFloat(sensEl.value) || 26;
+      const maxYawDeg = sliderMin + sliderMax - sliderVal;
+      const maxYaw = (maxYawDeg * Math.PI) / 180;
+      if (!result || !result.faceLandmarks || result.faceLandmarks.length === 0) {
+        return { x: null, detected: false };
+      }
+      const lm = result.faceLandmarks[0];
+      let raw = yawFromLandmarks(lm);
+      if (result.facialTransformationMatrixes && result.facialTransformationMatrixes.length > 0) {
+        const data = result.facialTransformationMatrixes[0].data;
+        raw = yawFromMatrixRowMajor(data) * 0.55 + raw * 0.45;
+      }
+      const alpha = 0.38;
+      smoothedYaw = smoothedYaw * (1 - alpha) + raw * alpha;
+      const rel = smoothedYaw - yawOffset;
+      const t = -Math.max(-1, Math.min(1, rel / Math.max(0.08, maxYaw)));
+      const half = game.paddleW * 0.5 + 4;
+      const cx = LOGICAL_W * 0.5 + t * (LOGICAL_W * 0.5 - half);
+      return { x: cx, detected: true };
+    }
+
+    function setToggle(btn, on) {
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+      const lbl = btn.querySelector(".lbl");
+      if (lbl) lbl.textContent = on ? "On" : "Off";
+    }
+    function syncUi() {
+      setToggle(btnMode, faceMode);
+      setToggle(btnOverlay, overlayFace);
+      setToggle(btnPerf, perfMode);
+      btnStart.textContent = game.gameOver
+        ? "Play again"
+        : !game.running
+        ? "Start"
+        : game.paused
+        ? "Resume"
+        : "Pause";
+      updateHud();
+    }
+
+    async function restartCamera() {
+      if (stream) {
+        try { stream.getTracks().forEach((t) => t.stop()); } catch {}
+        stream = null;
+        video.srcObject = null;
+      }
+      if (faceMode) await startCamera();
+    }
+
+    btnPerf.addEventListener("click", async () => {
+      perfMode = !perfMode;
+      syncUi();
+      resizeCanvases();
+      octx.setTransform(1, 0, 0, 1, 0, 0);
+      octx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      if (faceMode) {
+        setStatus(perfMode ? "Switching to performance camera…" : "Switching to quality camera…");
+        await restartCamera();
+        setStatus(perfMode ? "Performance mode" : "Quality mode");
+      }
+    });
+
+    btnMode.addEventListener("click", async () => {
+      if (faceMode) {
+        faceMode = false;
+        mouthLaunchPrimed = false;
+        mouthOpenHeld = 0;
+        mouthClosedHeld = 0;
+        syncUi();
+        setStatus("Keyboard / mouse on game area");
+        return;
+      }
+      faceMode = true;
+      mouthLaunchPrimed = false;
+      mouthOpenHeld = 0;
+      mouthClosedHeld = 0;
+      syncUi();
+      setStatus("Starting camera…");
+      const ok = await ensureFacePipeline();
+      if (ok) {
+        setStatus("Face control active");
+      } else {
+        setStatus("Face control unavailable");
+      }
+    });
+
+    btnOverlay.addEventListener("click", () => {
+      overlayFace = !overlayFace;
+      syncUi();
+      if (!overlayFace) {
+        octx.setTransform(1, 0, 0, 1, 0, 0);
+        octx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      }
+    });
+
+    function calibrateFromResult(result) {
+      if (!result || !result.faceLandmarks || !result.faceLandmarks.length) return false;
+      const lm = result.faceLandmarks[0];
+      let raw = yawFromLandmarks(lm);
+      if (
+        result.facialTransformationMatrixes &&
+        result.facialTransformationMatrixes.length > 0
+      ) {
+        const data = result.facialTransformationMatrixes[0].data;
+        raw = yawFromMatrixRowMajor(data) * 0.55 + raw * 0.45;
+      }
+      yawOffset = raw;
+      smoothedYaw = raw;
+      return true;
+    }
+
+    btnCalibrate.addEventListener("click", async () => {
+      faceMode = true;
+      syncUi();
+      setStatus("Re-requesting camera…");
+      lastFaceResult = null;
+      pendingCalibration = true;
+      await restartCamera();
+      if (!stream) {
+        pendingCalibration = false;
+        setStatus("Camera unavailable");
+        return;
+      }
+      setStatus("Calibrating: look straight at the camera…");
+    });
+
+    btnStart.addEventListener("click", () => {
+      if (game.gameOver) {
+        game.level = 1;
+        game.score = 0;
+        game.lives = 3;
+        game.gameOver = false;
+        game.ceilingHit = false;
+        game.paddleW = PADDLE_W0;
+        game.ballSpeed = 320;
+        game.buildBricks();
+        game.resetBallOnPaddle();
+        game.bricksBroken = 0;
+        game.speedBumpCount = 0;
+        game.running = true;
+        game.paused = false;
+        mouthOpenHeld = 0;
+        mouthClosedHeld = 0;
+        prevBallAttached = game.ballAttached;
+        armMouthLaunchForServe();
+        prevRunning = true;
+        syncUi();
+        return;
+      }
+      if (!game.running) {
+        game.running = true;
+        game.paused = false;
+        armMouthLaunchForServe();
+        prevRunning = true;
+      } else {
+        game.paused = !game.paused;
+      }
+      syncUi();
+    });
+
+    btnReset.addEventListener("click", () => {
+      game.level = 1;
+      game.score = 0;
+      game.lives = 3;
+      game.gameOver = false;
+      game.ceilingHit = false;
+      game.paddleW = PADDLE_W0;
+      game.ballSpeed = 320;
+      game.buildBricks();
+      game.resetBallOnPaddle();
+      game.running = false;
+      game.paused = true;
+      game.bricksBroken = 0;
+      mouthLaunchPrimed = false;
+      mouthOpenHeld = 0;
+      mouthClosedHeld = 0;
+      prevBallAttached = game.ballAttached;
+      prevRunning = false;
+      syncUi();
+    });
+
+    window.addEventListener("keydown", (e) => {
+      if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true;
+      if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = true;
+      if (e.code === "KeyP") {
+        if (game.running) game.paused = !game.paused;
+        syncUi();
+      }
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (game.gameOver) {
+          startNewGameFromMouth();
+        } else {
+          if (!game.running) {
+            game.running = true;
+            game.paused = false;
+            prevRunning = true;
+          } else if (game.paused) {
+            game.paused = false;
+          }
+          game.launchBall();
+          syncUi();
+        }
+      }
+    });
+    window.addEventListener("keyup", (e) => {
+      if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
+      if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
+    });
+
+    gameStack.addEventListener("pointermove", (e) => {
+      const r = gameStack.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width;
+      pointerGameX = nx * LOGICAL_W;
+    });
+    gameStack.addEventListener("pointerleave", () => {
+      pointerGameX = null;
+    });
+    gameStack.addEventListener("pointerdown", (e) => {
+      if (e.button === 0) {
+        if (!game.running && !game.gameOver) {
+          game.running = true;
+          game.paused = false;
+        }
+        game.launchBall();
+        syncUi();
+      }
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden && game.running) {
+        game.paused = true;
+        syncUi();
+      }
+    });
+
+    window.addEventListener("load", async () => {
+      syncUi();
+      setStatus("Loading face model…");
+      await ensureFacePipeline();
+      if (stream) {
+        setStatus("Face control active (default)");
+      } else {
+        setStatus("Keyboard control");
+      }
+    });
+
+    function armMouthLaunchForServe() {
+      if (!faceMode) return;
+      mouthLaunchPrimed = true;
+      mouthOpenHeld = 0;
+      mouthClosedHeld = 0;
+      if (faceLandmarker && stream && video.readyState >= 2) {
+        const r = faceLandmarker.detectForVideo(video, performance.now());
+        lastFaceResult = r;
+        const raw = mouthOpenSignal(r);
+        mouthSmoothedOpen = mouthSmoothedOpen * 0.06 + raw * 0.52;
+      } else {
+        mouthSmoothedOpen = 0;
+      }
+    }
+
+    function startNewGameFromMouth() {
+      game.level = 1;
+      game.score = 0;
+      game.lives = 3;
+      game.gameOver = false;
+      game.ceilingHit = false;
+      game.paddleW = PADDLE_W0;
+      game.ballSpeed = 320;
+      game.buildBricks();
+      game.resetBallOnPaddle();
+      game.bricksBroken = 0;
+      game.speedBumpCount = 0;
+      game.running = true;
+      game.paused = false;
+      prevBallAttached = game.ballAttached;
+      prevRunning = true;
+      syncUi();
+    }
+
+    function updateMouthLaunch(dt, result) {
+      if (!faceMode || !stream) return;
+      if (!game.ballAttached && !game.gameOver) return;
+      const raw = result ? mouthOpenSignal(result) : 0;
+      mouthSmoothedOpen = mouthSmoothedOpen * 0.72 + raw * 0.28;
+      if (!mouthLaunchPrimed) {
+        if (mouthSmoothedOpen < 0.2) mouthClosedHeld += dt;
+        else mouthClosedHeld = Math.max(0, mouthClosedHeld - dt * 2);
+        if (mouthClosedHeld > 0.22) {
+          mouthLaunchPrimed = true;
+          mouthOpenHeld = 0;
+          mouthClosedHeld = 0;
+        }
+        return;
+      }
+      const openThresh = 0.4;
+      const fireHeld = 0.1;
+      if (mouthSmoothedOpen > openThresh) mouthOpenHeld += dt;
+      else mouthOpenHeld = Math.max(0, mouthOpenHeld - dt * 2.5);
+      if (mouthOpenHeld > fireHeld) {
+        if (game.gameOver) {
+          startNewGameFromMouth();
+        } else {
+          if (!game.running) {
+            game.running = true;
+            game.paused = false;
+            prevRunning = true;
+            syncUi();
+          } else if (game.paused) {
+            game.paused = false;
+            syncUi();
+          }
+          game.launchBall();
+        }
+        mouthLaunchPrimed = false;
+        mouthOpenHeld = 0;
+        mouthClosedHeld = 0;
+        mouthSmoothedOpen *= 0.35;
+      }
+    }
+
+    function drawFaceDecor(ctx, utils, landmarks, alpha) {
+      if (!landmarks || !utils) return;
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      if (PERF.drawTesselation()) {
+        utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_TESSELATION, {
+          color: "#C0C0C070",
+          lineWidth: 1,
+        });
+      }
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYE, { color: "#FF3030", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_EYEBROW, { color: "#FF3030", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYE, { color: "#30FF30", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_EYEBROW, { color: "#30FF30", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_FACE_OVAL, { color: "#E0E0E0", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LIPS, { color: "#E0E0E0", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_RIGHT_IRIS, { color: "#FF3030", lineWidth: 1 });
+      utils.drawConnectors(landmarks, FaceLandmarker.FACE_LANDMARKS_LEFT_IRIS, { color: "#30FF30", lineWidth: 1 });
+      ctx.restore();
+    }
+
+    function frame(ts) {
+      const dt = Math.min(0.05, (ts - lastTs) / 1000);
+      lastTs = ts;
+      fpsAcc += dt;
+      fpsFrames += 1;
+      if (fpsAcc >= 0.5) {
+        fpsShow = Math.round(fpsFrames / fpsAcc);
+        fpsAcc = 0;
+        fpsFrames = 0;
+        updateHud();
+      }
+
+      let faceTargetX = null;
+
+      if (faceMode && faceLandmarker && stream && video.readyState >= 2) {
+        const interval = PERF.detectIntervalMs();
+        if (ts - lastDetectTs >= interval) {
+          lastDetectTs = ts;
+          lastFaceResult = faceLandmarker.detectForVideo(video, ts);
+        }
+        if (pendingCalibration && calibrateFromResult(lastFaceResult)) {
+          pendingCalibration = false;
+          setStatus("Calibrated");
+        }
+        const ft = faceTargetFromResult(lastFaceResult);
+        faceTargetX = ft.x;
+        if (ft.detected) lastFaceTime = ts;
+      }
+
+      if (game.ballAttached && !prevBallAttached) {
+        mouthLaunchPrimed = false;
+        mouthOpenHeld = 0;
+        mouthClosedHeld = 0;
+      }
+      prevBallAttached = game.ballAttached;
+
+      prevRunning = game.running;
+
+      updateMouthLaunch(dt, lastFaceResult);
+
+      if (faceMode && stream && ts - lastFaceTime > 520) {
+        setStatus("No face detected (hold steady)");
+      } else if (faceMode && stream) {
+        setStatus("Face control active");
+      } else if (faceMode && !stream) {
+        setStatus("Starting camera…");
+      } else if (!faceMode) {
+        setStatus("Keyboard / mouse on game area");
+      }
+
+      game.updatePaddle(
+        dt,
+        keys,
+        pointerGameX,
+        faceMode && !!stream,
+        faceTargetX
+      );
+      game.updatePhysics(dt);
+
+      if (game.gameOver) {
+        if (game.score > highScore) {
+          highScore = game.score;
+          localStorage.setItem(HS_KEY, String(highScore));
+        }
+      }
+
+      updateHud();
+
+      gctx.save();
+      gctx.scale(gameStack.clientWidth / LOGICAL_W, gameStack.clientHeight / LOGICAL_H);
+      game.draw(gctx);
+      gctx.restore();
+
+      octx.setTransform(1, 0, 0, 1, 0, 0);
+      octx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+      if (
+        overlayFace &&
+        faceMode &&
+        stream &&
+        lastFaceResult &&
+        lastFaceResult.faceLandmarks &&
+        lastFaceResult.faceLandmarks[0]
+      ) {
+        if (!drawingUtilsOverlay) drawingUtilsOverlay = new DrawingUtils(octx);
+        const cw = overlayCanvas.width;
+        const ch = overlayCanvas.height;
+        const fitted = mirrorAndFitInto(lastFaceResult.faceLandmarks[0], cw, ch);
+        drawFaceDecor(octx, drawingUtilsOverlay, fitted, 0.16);
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    requestAnimationFrame((t) => {
+      lastTs = t;
+      requestAnimationFrame(frame);
+    });
+
+    syncUi();
+    updateHud();
+  </script>
+</body>
+</html>
