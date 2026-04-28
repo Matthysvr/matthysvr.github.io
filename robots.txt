@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 
 Disallow: /agentic-peer-review-dashboard/
+Disallow: /elicivo/
 Disallow: /assessment.html
 Disallow: /404.html
