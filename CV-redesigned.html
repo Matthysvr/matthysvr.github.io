@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV - Matthys van Rooyen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --accent: #d14929;
+            --text: #1a1a1a;
+            --muted: #777;
+            --intro-bg: #faf8f7;
+            --sidebar-tint: #faf4f1;
+            --sidebar-divider: rgba(209, 73, 41, 0.22);
+        }
+        * {
+            box-sizing: border-box;
+        }
+        @page {
+            margin: 0;
+            size: A4;
+        }
+        body {
+            font-family: Inter, Arial, sans-serif;
+            font-size: 12.5px;
+            line-height: 1.45;
+            margin: 0;
+            padding: 0;
+            color: var(--text);
+            background: #e8e8e8;
+        }
+        .container {
+            width: 210mm;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 18px 16px 24px;
+            background: #fff;
+        }
+        .top-strip {
+            height: 6px;
+            background: var(--accent);
+            margin: -18px -16px 0;
+            width: calc(100% + 32px);
+        }
+        .header {
+            padding-top: 14px;
+            padding-bottom: 12px;
+        }
+        .header h1 {
+            margin: 0 0 4px;
+            font-size: 34px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+        }
+        .header .tagline {
+            margin: 0 0 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+        }
+        .header .rule {
+            height: 2px;
+            width: 100%;
+            max-width: 180px;
+            background: var(--accent);
+            margin-bottom: 10px;
+        }
+        .header .contact {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 6px 12px;
+            font-size: 11.5px;
+        }
+        .header .contact > div {
+            flex: 1 1 30%;
+            min-width: 140px;
+        }
+        .intro-block {
+            background: var(--intro-bg);
+            border-left: 4px solid var(--accent);
+            padding: 10px 14px;
+            margin-bottom: 14px;
+        }
+        .intro-block p {
+            margin: 0 0 8px;
+        }
+        .intro-block p:last-child {
+            margin-bottom: 0;
+        }
+        .columns {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+        .sidebar {
+            flex: 0 0 33%;
+            background: var(--sidebar-tint);
+            color: var(--text);
+            padding: 12px 14px 16px 13px;
+            border-left: 4px solid var(--accent);
+            border-right: 1px solid var(--sidebar-divider);
+        }
+        .main-panel {
+            flex: 1;
+            min-width: 0;
+            background: #fff;
+            padding: 12px 0 16px 18px;
+        }
+        .sidebar .block {
+            margin-bottom: 14px;
+        }
+        .sidebar .block:last-child {
+            margin-bottom: 0;
+        }
+        .sidebar .label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--accent);
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--sidebar-divider);
+        }
+        .sidebar h3 {
+            margin: 0 0 2px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .sidebar p {
+            margin: 0 0 4px;
+            font-size: 12px;
+            font-weight: 400;
+            color: #333;
+        }
+        .sidebar .edu-item {
+            margin-bottom: 10px;
+        }
+        .sidebar .edu-item:last-child {
+            margin-bottom: 0;
+        }
+        .sidebar .skills-text {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #333;
+        }
+        .main-panel .label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text);
+            margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            min-width: 140px;
+        }
+        .job {
+            margin-bottom: 12px;
+        }
+        .job:last-child {
+            margin-bottom: 0;
+        }
+        .job .dates {
+            font-size: 11px;
+            color: var(--muted);
+            font-style: italic;
+            margin: 0 0 3px;
+        }
+        .job .line {
+            margin: 0 0 4px;
+            font-size: 12.5px;
+        }
+        .job .line strong {
+            font-weight: 700;
+        }
+        .job .sub {
+            margin: 0 0 4px;
+            font-size: 11.5px;
+        }
+        .job ul {
+            margin: 4px 0 0;
+            padding-left: 18px;
+        }
+        .job li {
+            margin-bottom: 2px;
+        }
+        .page-two {
+            break-before: page;
+            page-break-before: always;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+        .page-two-top-strip {
+            height: 6px;
+            background: var(--accent);
+            margin-left: -16px;
+            margin-right: -16px;
+            width: calc(100% + 32px);
+            flex-shrink: 0;
+        }
+        .page-two-body {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            padding-top: 14px;
+        }
+        .page-two .col {
+            flex: 1;
+            min-width: 0;
+        }
+        .page-two .label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text);
+            margin-bottom: 8px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--accent);
+            display: inline-block;
+            min-width: 100px;
+        }
+        .page-two ul {
+            margin: 0;
+            padding-left: 16px;
+        }
+        .page-two li {
+            margin-bottom: 4px;
+        }
+        a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        @media print {
+            body {
+                background: #fff;
+            }
+            .container {
+                width: 210mm;
+                max-width: none;
+                padding: 15mm;
+                margin: 0;
+            }
+            .top-strip {
+                margin: -15mm -15mm 0;
+                width: calc(100% + 30mm);
+            }
+            .page-two-top-strip {
+                margin-left: -15mm;
+                margin-right: -15mm;
+                width: calc(100% + 30mm);
+            }
+            .top-strip,
+            .page-two-top-strip,
+            .sidebar,
+            .intro-block,
+            .header .rule,
+            .main-panel .label,
+            .page-two .label {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-strip" aria-hidden="true"></div>
+        <header class="header">
+            <h1>Matthys van Rooyen</h1>
+            <p class="tagline">Machine Learning &amp; Software Engineer</p>
+            <div class="rule" aria-hidden="true"></div>
+            <div class="contact">
+                <div>Pretoria, South Africa</div>
+                <div><a href="mailto:matthys@matthysvr.co.za">matthys@matthysvr.co.za</a></div>
+                <div>+27 76 946 0180</div>
+            </div>
+        </header>
+
+        <div class="intro-block">
+            <p>Machine Learning and Software Engineer focused on production systems: solution design, implementation, and delivery using Python, TypeScript, cloud platforms, and modern AI tooling (including RAG and agent-style workflows where they fit).</p>
+            <p>MSc in Data Science and Artificial Intelligence with Distinction (University of London). Cotrugli Vanguard MBA in progress. Comfortable owning architecture conversations, shipping maintainable code, and supporting teams through mentoring and technical hiring.</p>
+        </div>
+
+        <div class="columns">
+            <aside class="sidebar">
+                <div class="block">
+                    <div class="label">Education</div>
+                    <div class="edu-item">
+                        <h3>Cotrugli Business School</h3>
+                        <p>MBA: Vanguard</p>
+                        <p>(In Progress)</p>
+                    </div>
+                    <div class="edu-item">
+                        <h3>University of London</h3>
+                        <p>Master of Science: Data Science and Artificial Intelligence</p>
+                        <p>(Completed with Distinction)</p>
+                    </div>
+                    <div class="edu-item">
+                        <h3>Belgium Campus</h3>
+                        <p>Bachelor of Computing: Software Engineering</p>
+                        <p>(Completed with Distinction)</p>
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="label">Key Skills</div>
+                    <div class="skills-text">
+                        Solution Architecture &amp; Software Engineering
+                        &bull; Machine Learning, Data Science &amp; AI Development
+                        &bull; Project Leadership, Mentoring &amp; Hiring
+                        &bull; Agile Methods
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="label">Integrations and Technologies</div>
+                    <div class="skills-text">
+                        LangChain, LangGraph, MCP &amp; RAG
+                        &bull; AWS (CDK, CloudFormation, Neptune, Personalize, OpenSearch, Lambda, SageMaker, etc.)
+                        &bull; Docker
+                        &bull; Git, GitHub Actions &amp; AWS CodePipeline (CI/CD)
+                        &bull; Grafana, Snowflake &amp; Mixpanel
+                    </div>
+                </div>
+                <div class="block">
+                    <div class="label">Languages &amp; Frameworks</div>
+                    <div class="skills-text">
+                        Python
+                        &bull; TypeScript
+                        &bull; SQL &amp; NoSQL
+                        &bull; JavaScript
+                        &bull; Node.js
+                        &bull; C#
+                        &bull; React
+                        &bull; Bash
+                        &bull; Java
+                        &bull; Gremlin
+                    </div>
+                </div>
+            </aside>
+            <div class="main-panel">
+                <div class="label">Work Experience</div>
+                <div class="job">
+                    <p class="dates">October 2024 - Present</p>
+                    <p class="line"><strong>Machine Learning and Software Engineer</strong> &bull; Warp Development</p>
+                    <ul>
+                        <li>Design and deliver ML and software work for clients, from architecture through deployment on AWS and adjacent tooling.</li>
+                        <li>Apply modern AI engineering patterns (RAG, agents, integrations) when they match product and reliability needs.</li>
+                        <li>Interview and assess candidates for software and data roles as part of hiring.</li>
+                    </ul>
+                </div>
+                <div class="job">
+                    <p class="dates">November 2024 - Present</p>
+                    <p class="line"><strong>Senior Software Engineer</strong> &bull; PayJustNow &bull; Contracted</p>
+                    <ul>
+                        <li>Ship and harden consumer services.</li>
+                        <li>Contribute ML and architecture input in model-backed or data-heavy features.</li>
+                    </ul>
+                </div>
+                <div class="job">
+                    <p class="dates">January 2024 - December 2024</p>
+                    <p class="line"><strong>Contract Lecturer</strong> &bull; Akademia</p>
+                    <ul>
+                        <li>Delivered undergraduate modules in Program Logic &amp; Design and Data Analytics.</li>
+                        <li>Designed assessments and coursework.</li>
+                    </ul>
+                </div>
+                <div class="job">
+                    <p class="dates">December 2020 - April 2023</p>
+                    <p class="line"><strong>Software Engineer</strong> &bull; Team Lead &bull; Warp Development</p>
+                    <ul>
+                        <li>Led teams on sustained client delivery: planning, mentoring, and stakeholder alignment.</li>
+                        <li>Built and extended C# (.NET) MVC services and AWS-backed integrations for production e-commerce and related platforms.</li>
+                        <li>Owned technical quality and client communication on lead-developer assignments across multiple projects.</li>
+                    </ul>
+                </div>
+                <div class="job">
+                    <p class="dates">May 2019 - December 2020</p>
+                    <p class="line"><strong>Web Developer</strong> &bull; Freelancer &bull; Annagoed</p>
+                    <ul>
+                        <li>Delivered sites, hosting, and mail setups for small-business clients.</li>
+                        <li>Combined hands-on development with content and light technical consulting.</li>
+                    </ul>
+                </div>
+                <div>
+                    <p>Please visit my <a href="https://www.linkedin.com/in/matthysvr" target="_blank">LinkedIn Profile</a> for a more indepth career history and projects list.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page-two">
+            <div class="page-two-top-strip" aria-hidden="true"></div>
+            <div class="page-two-body">
+                <div class="col">
+                    <div class="label">Leadership</div>
+                    <ul>
+                        <li>Board member, Vice Chairperson for Mensa Pretoria (2023 - 2024)</li>
+                        <li>Board member, Technical officer for Mensa Pretoria (2022 - 2024)</li>
+                        <li>Board member, Membership officer for Mensa Pretoria (2019 - 2022)</li>
+                        <li>Technical board member of the Student Representative Council at Belgium Campus (2020)</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <div class="label">Other Projects</div>
+                    <ul>
+                        <li>International University Project - Penn State</li>
+                        <li>IBM certifications including Enterprise Design Thinking Practitioner and related topics</li>
+                        <li>Judge at Eskom Science Expo</li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <div class="label">Other</div>
+                    <ul>
+                        <li>LinkedIn: <a href="https://www.linkedin.com/in/matthysvr" target="_blank" rel="noopener">@matthysvr</a></li>
+                        <li>Personal Website: <a href="https://matthysvr.com" target="_blank" rel="noopener">matthysvr.com</a></li>
+                        <li>Portfolio: <a href="https://portfolio.matthysvr.com" target="_blank" rel="noopener">portfolio.matthysvr.com</a></li>
+                        <li>Kaggle: <a href="https://www.kaggle.com/matthysvr" target="_blank" rel="noopener">@matthysvr</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
