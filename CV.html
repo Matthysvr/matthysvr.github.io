@@ -4,9 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CV - Matthys van Rooyen</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Inter', Arial, sans-serif;
             font-size: 14px;
             margin: 0;
             padding: 0;
@@ -29,10 +32,12 @@
             font-size: 24px;
             border: 4px solid #d14929;
             margin-bottom: 20px;
+            padding: 10px 20px;
         }
         .header h1 {
             margin: 0;
-            font-weight: bold;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
         .header p {
             margin: 5px 0;
@@ -42,8 +47,9 @@
             background-color: black;
             color: white;
             padding: 10px;
-            font-size: 16px;
-            font-weight: bold;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
             margin-bottom: 10px;
         }
         .content {
@@ -51,11 +57,13 @@
             justify-content: space-between;
         }
         .left-section {
-            width: 33%;
-            border-color: #d14929;
+            width: 32%;
+            border-right: 2px solid #d14929;
+            padding-right: 16px;
         }
         .right-section {
-            width: 66%;
+            width: 64%;
+            padding-left: 16px;
         }
         .full-section {
             width: 100%;
@@ -63,9 +71,10 @@
         .section-title {
             background-color: black;
             color: white;
-            font-weight: bold;
+            font-weight: 700;
             padding: 5px;
-            font-size: 16px;
+            font-size: 14px;
+            letter-spacing: 0.8px;
             margin-bottom: 10px;
         }
         .section {
@@ -74,7 +83,7 @@
         .section h3 {
             margin: 0 0 5px;
             font-size: 14px;
-            font-weight: bold;
+            font-weight: 600;
         }
         .section p {
             margin: 5px 0;
@@ -112,6 +121,29 @@
             color: #d14929;
             text-decoration: none;
         }
+        .intro-text {
+            padding: 0 5px;
+            margin-bottom: 10px;
+        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 0;
+            }
+            .container {
+                width: 210mm;
+                padding: 15px;
+            }
+            .section-title, .intro {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .left-section {
+                border-right: 2px solid #d14929;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
     </style>
 </head>
 <body>
@@ -119,12 +151,12 @@
         <div class="header">
             <div class="heading">
                 <h1>Matthys van Rooyen</h1>
-                <p>MACHINE LEARNING- & SOFTWARE ENGINEER</p>
+                <p>MACHINE LEARNING & SOFTWARE ENGINEER</p>
             </div>
             <div style="display: flex; justify-content: space-between; text-align: center;">
                 <div style="width: 33.33%;">Pretoria, South Africa</div>
                 <div style="width: 33.33%;"><a href="mailto:matthys@matthysvr.co.za">matthys@matthysvr.co.za</a></div>
-                <div style="width: 33.33%;">+27 76 946 0180</a></div>
+                <div style="width: 33.33%;">+27 76 946 0180</div>
             </div>
         </div>
         <div class="intro">
@@ -132,61 +164,56 @@
         </div>
         <div class="intro-text">
             <p>As a first-class Machine Learning and Software Engineer, I create innovative AI and software solutions to boost business growth and efficiency. With a strong software engineering background and a passion for learning, I've led diverse projects across multiple industries.</p>
-            <p>With a Master's in Data Science and Artificial Intelligence, I apply my skills to real-world challenges, pursue further education including the COTRUGLI Vanguard MBA,and certifications like AWS Solutions Architect Professional, and stay updated by attending popular industry conferences.</p>
+            <p>With a Master's in Data Science and Artificial Intelligence, I apply my skills to real-world challenges, pursue further education including the COTRUGLI Vanguard MBA, and various professional certifications, and stay updated by attending popular industry conferences.</p>
         </div>
         <div class="content">
             <div class="left-section">
                 <div class="section-title">EDUCATION</div>
                 <div class="section">
                     <h3>Cotrugli Business School</h3>
-                    <p>(2026 - 2027)</p>
                     <p>MBA: Vanguard</p>
+                    <p>(In Progress)</p>
                 </div>
                 <div class="section">
                     <h3>University of London</h3>
-                    <p>(2023 - 2025)</p>
                     <p>Master of Science: Data Science and Artificial Intelligence</p>
+                    <p>(Completed with Distinction)</p>
                 </div>
                 <div class="section">
                     <h3>Belgium Campus</h3>
-                    <p>(2018 - 2021)</p>
                     <p>Bachelor of Computing: Software Engineering</p>
+                    <p>(Completed with Distinction)</p>
                 </div>
 
                 <div class="section-title">KEY SKILLS</div>
                 <div class="skills">
-                    <ul>
-                        <li>Solution Architecture & Software Engineering</li>
-                        <li>Machine Learning, Data Science & AI Development</li>
-                        <li>Project Leadership, Mentoring & Hiring</li>
-                        <li>Agile Methods</li>
-                    </ul>
+                    Solution Architecture &amp; Software Engineering
+                    &bull; Machine Learning, Data Science &amp; AI Development
+                    &bull; Project Leadership, Mentoring &amp; Hiring
+                    &bull; Agile Methods
                 </div>
 
                 <div class="section-title">INTEGRATIONS AND TECHNOLOGIES</div>
                 <div class="skills">
-                    <ul>
-                        <li>LangChain, LangGraph, MCP & RAG</li>
-                        <li>AWS (CDK, CloudFormation, Neptune, Personalize, OpenSearch, Lambda, SageMaker, etc.)</li>
-                        <li>Docker</li>
-                        <li>Git, GitHub Actions & AWS CodePipeline (CI/CD)</li>
-                        <li>Grafana & Snowflake</li>
-                    </ul>
+                    LangChain, LangGraph, MCP &amp; RAG
+                    &bull; AWS (CDK, CloudFormation, Neptune, Personalize, OpenSearch, Lambda, SageMaker, etc.)
+                    &bull; Docker
+                    &bull; Git, GitHub Actions &amp; AWS CodePipeline (CI/CD)
+                    &bull; Grafana, Snowflake &amp; Mixpanel
                 </div>
 
-                <div class="section-title">PROGRAMMING LANGUAGES</div>
+                <div class="section-title">LANGUAGES & FRAMEWORKS</div>
                 <div class="skills">
-                    Node.js
-                    &bull; Python 
-                    &bull; C#
+                    Python
                     &bull; TypeScript
-                    &bull; SQL &
-                    NoSQL - Languages
-                    &bull; Bash
-                    &bull; Java 
+                    &bull; SQL &amp; NoSQL
                     &bull; JavaScript
-                    &bull; Gremlin
+                    &bull; Node.js
+                    &bull; C#
                     &bull; React
+                    &bull; Bash
+                    &bull; Java
+                    &bull; Gremlin
                 </div>
             </div>
 
@@ -239,15 +266,9 @@
                         <li>Content Design & Technical Consulting</li>
                     </ul>
                 </div>
-                <div class="section">
-                    <p>Please visit my <a href="https://www.linkedin.com/in/matthysvr" target="_blank">LinkedIn</a> for a more indepth career history and projects list.</p>
-                </div>
             </div>
         </div>
-        <br/>
-        <br/>
-        <br/>
-        <div class="content">
+        <div class="content" style="margin-top: 20px;">
             <div class="full-section">
                 <div class="section-title">LEADERSHIP</div>
                 <div class="section">
